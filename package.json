@@ -1,0 +1,16 @@
+{
+  "name": "adminapi",
+  "version": "1.0.0",
+  "description": "API for Skillit Admin",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "author": "Dane Louis Bratz",
+  "license": "ISC",
+  "dependencies": {
+    "knex": "^0.13.0",
+    "koa": "^2.3.0",
+    "pg": "^6.4.0"
+  }
+}
