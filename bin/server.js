@@ -7,6 +7,7 @@ const {server: {port, host}} = require('../config');
 
 const app = require('../app');
 
+//app.shutDown defined in app.js
 process.once('SIGINT', () => app.shutDown());
 process.once('SIGTERM', () => app.shutDown());
 

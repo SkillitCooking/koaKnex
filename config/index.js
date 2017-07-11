@@ -18,7 +18,7 @@ module.exports = {
         host: _.defaultTo(process.env.HOST, 'localhost'),
         root: ROOT,
         //for your development needs
-        data: path.join(ROOT, '../', '/data')
+        data: path.join(ROOT, '/data')
     },
 
     env: {
@@ -31,7 +31,18 @@ module.exports = {
         expiresIn: '7d'
     },
 
-    db: knexfile[NODE_ENV]
+    db: knexfile[NODE_ENV],
+    cors: {
+        origin: '*',
+        exposeHeaders: ['Authorization'],
+        credentials: true,
+        allowMethods: ['GET', 'PUT', 'POST', 'DELETE'],
+        allowHeaders: ['Authorization', 'Content-Type'],
+        keepHeadersOnError: true
+    },
+    bodyParser: {
+        enableTypes: ['json']
+    }
 };
 
 function normalizePort(val) {

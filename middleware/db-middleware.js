@@ -1,6 +1,6 @@
 'use strict';
 
-const confif = require('../config');
+const config = require('../config');
 const fs = require('fs');
 
 module.exports = function (app) {
@@ -21,7 +21,7 @@ module.exports = function (app) {
             //then do migration
             app.migration = true;
             //will only run new, unrun migrations
-            promise = db.migrate.latest()
+            migrationPromise = db.migrate.latest()
                 .then(() => {
                     app.migration = false;
                 }, console.error);

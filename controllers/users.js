@@ -11,6 +11,14 @@ const {generateJWTforUser} = require('../lib/auth');
 
 module.exports = {
 
+    async get (ctx) {
+        ctx.body = {message: 'yo'}
+    },
+
+    async balls (ctx) {
+        ctx.throw(400, 'uh oh', {but: 'not really'});
+        ctx.body = {message: 'siiiit'};
+    },
 
     async post (ctx) {
         const {body} = ctx.request;
