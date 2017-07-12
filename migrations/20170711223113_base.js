@@ -36,6 +36,7 @@ exports.up = function(knex) {
             table.uuid('parent').notNullable().references('ingredients.id').onDelete('CASCADE');
             table.uuid('child').notNullable().references('ingredients.id').onDelete('CASCADE');
             table.timestamps(true, true);
+            table.unique(['parent', 'child']);
         })
 
         .createTable('recipes', function(table) {
@@ -64,6 +65,7 @@ exports.up = function(knex) {
             table.uuid('parent').notNullable().references('seasonings.id').onDelete('CASCADE');
             table.uuid('child').notNullable().references('seasonings.id').onDelete('CASCADE');
             table.timestamps(true, true);
+            table.unique(['parent', 'child']);
         })
 
         .createTable('ingredient_tags', function(table) {
@@ -71,7 +73,10 @@ exports.up = function(knex) {
             table.uuid('ingredient').notNullable().references('ingredients.id').onDelete('CASCADE');
             table.uuid('tag').notNullable().references('tags.id').onDelete('CASCADE');
             //will want this trimmed and lowercased... almost desires being made its own table...
+            //purpose for concept like 'Category'
             table.string('type').defaultTo('DEFAULT');
+            table.timestamps(true, true);
+            table.unique(['ingredient', 'tag']);
         })
 
         .createTable('steps', function(table) {
@@ -79,12 +84,15 @@ exports.up = function(knex) {
             table.uuid('recipe').notNullable().references('recipes.id').onDelete('CASCADE');
             table.string('text').notNullable();
             table.integer('order').notNullable();
+            table.timestamps(true, true);
         })
 
         .createTable('step_tags', function(table) {
             table.uuid('id').unique().primary().notNullable();
             table.uuid('step').notNullable().references('steps.id').onDelete('CASCADE');
             table.uuid('tag').notNullable().references('tags.id').onDelete('CASCADE');
+            table.unique(['step', 'tag']);
+            table.timestamps(true, true);
         })
 
         .createTable('recipe_ingredients', function(table) {
@@ -93,12 +101,16 @@ exports.up = function(knex) {
             table.uuid('ingredient').notNullable().references('ingredients.id').onDelete('CASCADE');
             table.boolean('is_frozen').defaultTo(false);
             table.float('proportion').defaultTo(1);
+            table.unique(['recipe', 'ingredient']);
+            table.timestamps(true, true);
         })
 
         .createTable('recipe_seasonings', function(table) {
             table.uuid('id').unique().primary().notNullable();
             table.uuid('recipe').notNullable().references('recipes.id').onDelete('CASCADE');
             table.uuid('seasoning').notNullable().references('seasonings.id').onDelete('CASCADE');
+            table.unique(['recipe', 'seasoning']);
+            table.timestamps(true, true);
         });
 };
 
