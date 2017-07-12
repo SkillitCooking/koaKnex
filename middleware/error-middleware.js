@@ -24,7 +24,9 @@ function error(opts) {
         } catch (err) {
             //set ctx.status
             ctx.status = typeof err.status === 'number' ? err.status : 500;
-            
+            if(err.errors) {
+                err.message += ' ' + err.errors.join('--');
+            }
             //emit error signal
             ctx.app.emit('error', err, ctx);
 

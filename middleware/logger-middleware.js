@@ -5,7 +5,8 @@ const winston = require('winston');
 const ROOT = path.resolve(__dirname, '../');
 const bytes = require('bytes');
 
-let logToFile = process.env.LOG_TO_FILE === 'true' ? true : false; 
+let logToFile = process.env.LOG_TO_FILE === 'true' ? true : false;
+const env = process.env.NODE_ENV || 'development';
 
 if(logToFile) {
     winston.configure({
@@ -42,10 +43,12 @@ function logger(opts) {
 
     app.on('error', (err, ctx) => {
         //file log err.[stack, message, name]
-        winston.error('ERROR', {error: err});
+        if(env === 'development') {
+            winston.error('ERROR: %s \n %s', err.message, err.stack);
+        } else {
+            winston.error('ERROR: ', {error: err});
+        }
     });
-
-    const env = process.env.NODE_ENV || 'development';
 
     return async function logger(ctx, next) {
         let requestSize = ctx.request.length;

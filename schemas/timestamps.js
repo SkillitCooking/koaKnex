@@ -1,7 +1,7 @@
 'use strict';
 
 const yup = require('yup');
-const isISO8601 = require('validator/lib/isISO8601');
+const isISO8601 = require('validator/lib/isISO8601').default;
 
 const timeStampSchema = yup.object().shape({
     createdAt: yup.string()

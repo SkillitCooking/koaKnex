@@ -1,6 +1,6 @@
 'use strict';
-
-global.__base = __dirname + '/';
+//nice for really nested modules...
+//global.__base = __dirname + '/';
 
 const config = require('./config');
 const http = require('http');

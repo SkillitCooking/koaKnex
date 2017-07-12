@@ -7,7 +7,7 @@ const humps = require('humps');
 
 const {cannotAuthenticate, validateClient} = require('../lib/validation');
 const {ValidationError} = require('../lib/errors');
-const {generateJWTforUser} = require('../lib/auth');
+const {generateJWTForUser} = require('../lib/auth');
 
 module.exports = {
 
@@ -28,18 +28,19 @@ module.exports = {
             abortEarly: false,
             context: {validatePassword: true}
         };
-
         //validate user
-        user = await ctx.app.schemas.user.validate(user, opts);
+        user = await ctx.app.schemas.users.validate(user, validationOpts);
+        //set id
+        user.id = uuid();
         //hash password
         user.password = await bcrypt.hash(user.password, 10);
         //DB insertion + key decamelization
         //check for existence first...
         user.id = await ctx.app.db('users')
             .returning('id')
-            .insert(humps.decamelizeKeys(user));
+            .insert(humps.decamelizeKeys(user))[0];
         //get user a token - can we expect there to be an id field here? I'm not so sure if not added explicitly
-        user = generateJWTforUser(user);
+        user = generateJWTForUser(user);
         //respond
         ctx.body = {user: _.omit(user, ['password'])};
     },
@@ -52,10 +53,10 @@ module.exports = {
         if(!body.user) {
             if(validateClient(clientPassword)) {
                 //then generate client jwt and send
-                ctx.body = generateJWTforUser({isClient: true});
+                ctx.body = generateJWTForUser({isClient: true});
             } else {
                 //then generate public jwt and send
-                ctx.body = generateJWTforUser({});
+                ctx.body = generateJWTForUser({});
             }
         } else {
             if(cannotAuthenticate(body.user)) {
@@ -80,12 +81,13 @@ module.exports = {
 
             if(!isValid) {
                 ctx.throw(
+                    body.user.password,
                     422,
                     new ValidationError(['is invalid'], '', 'username or password')
                 );
             }
 
-            user = generateJWTforUser(user)
+            user = generateJWTForUser(user);
 
             ctx.body = {user: _.omit(user, ['password'])};
         }

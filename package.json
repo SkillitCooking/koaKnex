@@ -4,7 +4,7 @@
   "description": "API for Skillit Admin",
   "main": "index.js",
   "scripts": {
-    "test": "test"
+    "test": "jest"
   },
   "author": "Dane Louis Bratz",
   "license": "ISC",
@@ -34,6 +34,7 @@
   },
   "devDependencies": {
     "faker": "^4.1.0",
+    "jest": "^20.0.4",
     "nodemon": "^1.11.0"
   }
 }
