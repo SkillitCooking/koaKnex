@@ -59,7 +59,7 @@ exports.up = function(knex) {
             table.timestamps(true, true);
         })
 
-        .createTable('composite_seasonings', function(table) {
+        .createTable('composing_seasonings', function(table) {
             table.uuid('id').unique().primary().notNullable();
             table.uuid('parent').notNullable().references('seasonings.id').onDelete('CASCADE');
             table.uuid('child').notNullable().references('seasonings.id').onDelete('CASCADE');
@@ -99,10 +99,22 @@ exports.up = function(knex) {
             table.uuid('id').unique().primary().notNullable();
             table.uuid('recipe').notNullable().references('recipes.id').onDelete('CASCADE');
             table.uuid('seasoning').notNullable().references('seasonings.id').onDelete('CASCADE');
-        })
+        });
 };
 
 exports.down = function(knex) {
     return knex.schema
-        .dropTableIfExists('users');
+        .dropTableIfExists('users')
+        .dropTableIfExists('units')
+        .dropTableIfExists('ingredients')
+        .dropTableIfExists('composing_ingredients')
+        .dropTableIfExists('recipes')
+        .dropTableIfExists('tags')
+        .dropTableIfExists('seasonings')
+        .dropTableIfExists('composing_seasonings')
+        .dropTableIfExists('ingredient_tags')
+        .dropTableIfExists('steps')
+        .dropTableIfExists('step_tags')
+        .dropTableIfExists('recipe_ingredients')
+        .dropTableIfExists('recipe_seasonings')
 };
