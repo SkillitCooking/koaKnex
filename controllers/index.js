@@ -1,7 +1,9 @@
 'use strict';
 
 const users = require('./users');
+const ingredients = require('./ingredients');
 
 module.exports = {
-    users
+    users,
+    ingredients
 };

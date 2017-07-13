@@ -21,7 +21,23 @@ const ingredientSchema = yup.object().shape({
             name: 'units',
             message: '${path} must be uuid',
             test: val => val ? isUUID(val) : true
-        })
+        }),
+    category: yup.string()
+        .test({
+            name: 'category',
+            message: '${path} must be uuid',
+            test: val => isUUID(val)
+        }),
+    tags: yup.array().ensure().of(yup.string().test({
+        name: 'tags',
+        message: '${path} must be uuid',
+        test: val => isUUID(val)
+    })),
+    composingIngredients: yup.array().ensure().of(yup.string().test({
+        name: 'composingIngredients',
+        message: '${path} must be uuid',
+        test: val => isUUID(val)
+    }))
 })
 .noUnknown()
 .concat(timeStampSchema);

@@ -3,15 +3,6 @@
 exports.up = function(knex) {
     return knex.schema
 
-        .createTable('users', function(table) {
-            table.uuid('id').unique().primary().notNullable();
-            table.string('username').unique().notNullable();
-            table.string('email').notNullable().defaultTo('demo@demo.demo');
-            table.string('password').notNullable();
-            table.boolean('is_admin').notNullable().defaultTo(false);
-            table.timestamps(true, true);
-        })
-
         .createTable('units', function(table) {
             table.uuid('id').unique().primary().notNullable();
             table.string('name_singular').unique().notNullable();
@@ -73,7 +64,7 @@ exports.up = function(knex) {
             table.uuid('ingredient').notNullable().references('ingredients.id').onDelete('CASCADE');
             table.uuid('tag').notNullable().references('tags.id').onDelete('CASCADE');
             //will want this trimmed and lowercased... almost desires being made its own table...
-            //purpose for concept like 'Category'
+            //purpose for concept like 'CATEGORY'
             table.string('type').defaultTo('DEFAULT');
             table.timestamps(true, true);
             table.unique(['ingredient', 'tag']);
@@ -116,7 +107,6 @@ exports.up = function(knex) {
 
 exports.down = function(knex) {
     return knex.schema
-        .dropTableIfExists('users')
         .dropTableIfExists('units')
         .dropTableIfExists('ingredients')
         .dropTableIfExists('composing_ingredients')
