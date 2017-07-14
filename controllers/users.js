@@ -23,7 +23,8 @@ module.exports = {
         await ctx.app.db('users').where('is_admin', true).del();
         ctx.body = {message: 'siiiit'};
     },
-
+    //TODO: should eventually protect against being able to willy-nilly
+    //set 'isAdmin'...
     async post (ctx) {
         const {body} = ctx.request;
         //get user from body

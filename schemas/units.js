@@ -12,7 +12,8 @@ const unitSchema = yup.object().shape({
             test: val => val ? isUUID(val) : true
         }),
     nameSingular: yup.string().required().lowercase().trim(),
-    namePlural: yup.string().required().lowercase().trim()
+    namePlural: yup.string().required().lowercase().trim(),
+    abbreviation: yup.string().lowercase().trim()
 })
 .noUnknown()
 .concat(timeStampSchema);

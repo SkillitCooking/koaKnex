@@ -15,8 +15,7 @@ module.exports = {
         ingredient = await ctx.app.schemas.ingredients.validate(ingredient, validationOpts);
         ingredient.id = uuid();
         //input, get id
-        ingredient.id = await ctx.app.db('ingredients')
-            .returning('id')
+        await ctx.app.db('ingredients')
             .insert(humps.decamelizeKeys(ingredient));
         //check is composite, do relation table insertions
         if(ingredient.isComposite && ingredient.composingIngredients) {
