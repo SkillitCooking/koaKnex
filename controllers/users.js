@@ -12,12 +12,15 @@ const {generateJWTForUser} = require('../lib/auth');
 module.exports = {
 
     async get (ctx) {
-        let users = await ctx.app.db('users').select('*');
+        console.log('get');
+        let users = await ctx.app.db.select().from('users');
         ctx.body = {users: users};
     },
 
     async balls (ctx) {
-        ctx.throw(400, 'uh oh', {but: 'not really'});
+        //ctx.throw(400, 'uh oh', {but: 'not really'});
+        console.log('here boose');
+        await ctx.app.db('users').where('is_admin', true).del();
         ctx.body = {message: 'siiiit'};
     },
 
@@ -38,9 +41,7 @@ module.exports = {
         //DB insertion + key decamelization
         //check for existence first...
         await ctx.app.db('users')
-            .returning('id')
             .insert(humps.decamelizeKeys(user));
-        console.log('user.id', user.id);
         //get user a token - can we expect there to be an id field here? I'm not so sure if not added explicitly
         user = generateJWTForUser(user);
         //respond

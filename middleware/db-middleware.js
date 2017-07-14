@@ -12,27 +12,26 @@ module.exports = function (app) {
                 throw err;
             }
         }
-        
-        const db = require('knex')(config.db);
-        app.db = db;
+    }
+    const db = require('knex')(config.db);
+    app.db = db;
 
-        let migrationPromise;
-        if(!config.env.isTest) {
-            //then do migration
-            app.migration = true;
-            //will only run new, unrun migrations
-            migrationPromise = db.migrate.latest()
-                .then(() => {
-                    app.migration = false;
-                }, console.error);
+    let migrationPromise;
+    if(!config.env.isTest) {
+        //then do migration
+        app.migration = true;
+        //will only run new, unrun migrations
+        migrationPromise = db.migrate.latest()
+            .then(() => {
+                app.migration = false;
+            }, console.error);
+    }
+
+    return async function (ctx, next) {
+        if(ctx.app.migration && migrationPromise) {
+            await migrationPromise;
         }
 
-        return async function (ctx, next) {
-            if(ctx.app.migration && migrationPromise) {
-                await migrationPromise;
-            }
-
-            return next();
-        }
+        return next();
     }
 };
