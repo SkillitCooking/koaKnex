@@ -14,7 +14,10 @@ const tagSchema = yup.object().shape({
     name: yup.string().required().lowercase().trim()
 })
 .noUnknown()
-.concat(timeStampSchema);
+.when('$isUpdate', (isUpdate, schema) => isUpdate
+    ? schema
+    : schema.concat(timeStampSchema)
+);
 
 module.exports = tagSchema;
 

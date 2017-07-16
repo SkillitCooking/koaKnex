@@ -26,7 +26,7 @@ module.exports = {
         ctx.body = {data: units};
     },
 
-    async delete(ctx) {
+    async del(ctx) {
         const {id} = ctx.params;
         const data = await ctx.app.db('units').where('id', id).returning(['id', 'name_singular']).del();
         ctx.body = {data: data};

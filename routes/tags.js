@@ -10,5 +10,7 @@ const {AUTHORIZATION} = require('../lib/constants');
 
 router.get('/tags', auth({authorization: AUTHORIZATION.PUBLIC}), ctrl.get);
 router.post('/tags', auth({authorization: AUTHORIZATION.PRIVATE}), ctrl.post);
+router.del('/tags/:id', auth({authorization: AUTHORIZATION.PRIVATE}), ctrl.del);
+router.put('/tags/:id', auth({authorization: AUTHORIZATION.PRIVATE}), ctrl.put);
 
 module.exports = router.routes();

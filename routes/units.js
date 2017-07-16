@@ -10,7 +10,7 @@ const {AUTHORIZATION} = require('../lib/constants');
 
 router.get('/units', auth({authorization: AUTHORIZATION.PUBLIC}), ctrl.get);
 router.post('/units', auth({authorization: AUTHORIZATION.PRIVATE}), ctrl.post);
-router.del('/units/:id', auth({authorizaton: AUTHORIZATION.PRIVATE}), ctrl.delete);
+router.del('/units/:id', auth({authorizaton: AUTHORIZATION.PRIVATE}), ctrl.del);
 router.put('/units/:id', auth({authorization: AUTHORIZATION.PRIVATE}), ctrl.put);
 
 module.exports = router.routes();

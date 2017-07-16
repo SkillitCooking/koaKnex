@@ -38,6 +38,7 @@ module.exports = {
             tag: ingredient.category,
             type: 'CATEGORY'
         };
+        //consolidate the two DB calls below?
         await ctx.app.db('ingredient_tags').insert(categoryRelation);
         if(ingredient.tags) {
             //assuming all have type 'default' for now...
