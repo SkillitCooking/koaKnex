@@ -6,7 +6,7 @@ const uuid = require('uuid');
 module.exports = {
     async get(ctx) {
         //camelize the below?
-        let units = await ctx.app.db('units').select('name_singular', 'name_plural', 'abbreviation');
+        let units = await ctx.app.db('units').select('name_singular', 'name_plural', 'abbreviation', 'id');
         ctx.body = {data: units};
     },
 

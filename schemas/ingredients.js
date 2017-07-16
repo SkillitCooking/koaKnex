@@ -33,10 +33,15 @@ const ingredientSchema = yup.object().shape({
         message: '${path} must be uuid',
         test: val => isUUID(val)
     })),
-    composingIngredients: yup.array().ensure().of(yup.string().test({
+    composingIngredients: yup.array().ensure().of(yup.array().min(2).max(2).test({
         name: 'composingIngredients',
-        message: '${path} must be uuid',
-        test: val => isUUID(val)
+        message: '${path} must be [uuid, boolean]',
+        test: val => {
+            //isArray && array.length == 2 && array[0] isUUID && array[1] isBoolean
+            console.log('val', val);
+            return isUUID(val[0]) &&
+                typeof val[1] === 'boolean';
+        }
     }))
 })
 .noUnknown()

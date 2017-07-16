@@ -4,7 +4,7 @@ const uuid = require('uuid');
 
 module.exports = {
     async get(ctx) {
-        let tags = await ctx.app.db('tags').pluck('name');
+        let tags = await ctx.app.db('tags').select('name', 'id');
         ctx.body = {data: tags};
     },
     async post(ctx) {
