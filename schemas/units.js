@@ -11,11 +11,20 @@ const unitSchema = yup.object().shape({
             message: '${path} must be uuid',
             test: val => val ? isUUID(val) : true
         }),
-    nameSingular: yup.string().required().lowercase().trim(),
-    namePlural: yup.string().required().lowercase().trim(),
+    nameSingular: yup.string().lowercase().trim().when('$isUpdate', (isUpdate, schema) => isUpdate
+        ? schema 
+        : schema.required()
+    ),
+    namePlural: yup.string().lowercase().trim().when('$isUpdate', (isUpdate, schema) => isUpdate
+        ? schema
+        : schema.required()
+    ),
     abbreviation: yup.string().lowercase().trim()
 })
 .noUnknown()
-.concat(timeStampSchema);
+.when('$isUpdate', (isUpdate, schema) => isUpdate
+    ? schema
+    : schema.concat(timeStampSchema)
+);
 
 module.exports = unitSchema;

@@ -16,12 +16,34 @@ module.exports = {
         let {units = {}} = body;
         //validate
         const validationOptions = {
-            abortEarly: false
+            abortEarly: false,
+            context: { isUpdate: false }
         };
         units = await ctx.app.schemas.units.validate(units, validationOptions);
         units.id = uuid();
         await ctx.app.db('units')
             .insert(humps.decamelizeKeys(units));
         ctx.body = {data: units};
+    },
+
+    async delete(ctx) {
+        const {id} = ctx.params;
+        const data = await ctx.app.db('units').where('id', id).returning(['id', 'name_singular']).del();
+        ctx.body = {data: data};
+    },
+
+    async put(ctx) {
+        const {id} = ctx.params;
+        const {body} = ctx.request;
+        let {units = {}} = body;
+        //validate
+        const validationOptions = {
+            abortEarly: false,
+            context: { isUpdate: true }
+        };
+        units = await ctx.app.schemas.units.validate(units, validationOptions);
+        units.updatedAt = new Date().toISOString();
+        const data = await ctx.app.db('units').where('id', id).returning('*').update(humps.decamelizeKeys(units));
+        ctx.body = {data: data};
     }
-}
+};
