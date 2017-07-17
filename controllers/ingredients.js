@@ -3,9 +3,11 @@
 const humps = require('humps');
 const uuid = require('uuid');
 const _ = require('lodash');
+const joinJs = require('join-js').default;
 
 const {getSelectQueries, ingredientsGetFields} = require('../lib/queries');
 const {PREFIX} = require('../lib/constants');
+const  {relationsMap} = require('../lib/relations-map');
 
 module.exports = {
     async post(ctx) {
@@ -69,7 +71,8 @@ module.exports = {
                 ...getSelectQueries('tags', PREFIX.TAGS, ingredientsGetFields.tags),
                 ...getSelectQueries('units', PREFIX.UNITS, ingredientsGetFields.units),
                 ...getSelectQueries('composing_ingredients', PREFIX.COMPOSING_INGREDIENTS, ingredientsGetFields.composingIngredients),
-                ...getSelectQueries('child_ingredients', PREFIX.COMPOSING_INGREDIENTS, ingredientsGetFields.childIngredients));
+                ...getSelectQueries('child_ingredients', PREFIX.CHILD_INGREDIENTS, ingredientsGetFields.childIngredients));
+        ingredients = joinJs.map(ingredients, relationsMap, 'ingredientMap', PREFIX.INGREDIENTS + '_');
         ctx.body = {data: ingredients};
     },
 
