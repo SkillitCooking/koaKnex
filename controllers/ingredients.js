@@ -4,6 +4,9 @@ const humps = require('humps');
 const uuid = require('uuid');
 const _ = require('lodash');
 
+const {getSelectQueries, ingredientsGetFields} = require('../lib/queries');
+const {PREFIX} = require('../lib/constants');
+
 module.exports = {
     async post(ctx) {
         const {body} = ctx.request;
@@ -55,7 +58,22 @@ module.exports = {
 
     //make more sophisticated later? Pagination, specific key projection
     async get(ctx) {
-        let ingredients = await ctx.app.db('ingredients').select('*');
+        let ingredients = await ctx.app.db('ingredients')
+            .leftJoin('ingredient_tags', 'ingredients.id', 'ingredient_tags.ingredient')
+            .leftJoin('tags', 'ingredient_tags.tag', 'tags.id')
+            .leftJoin('units', 'ingredients.units', 'units.id')
+            .leftJoin('composing_ingredients', 'ingredients.id', 'composing_ingredients.parent')
+            .leftJoin('ingredients as child_ingredients', 'composing_ingredients.child', 'child_ingredients.id')
+            .select(...getSelectQueries('ingredients', PREFIX.INGREDIENTS, ingredientsGetFields.ingredients),
+                ...getSelectQueries('ingredient_tags', PREFIX.INGREDIENT_TAGS, ingredientsGetFields.ingredientTags),
+                ...getSelectQueries('tags', PREFIX.TAGS, ingredientsGetFields.tags),
+                ...getSelectQueries('units', PREFIX.UNITS, ingredientsGetFields.units),
+                ...getSelectQueries('composing_ingredients', PREFIX.COMPOSING_INGREDIENTS, ingredientsGetFields.composingIngredients),
+                ...getSelectQueries('child_ingredients', PREFIX.COMPOSING_INGREDIENTS, ingredientsGetFields.childIngredients));
         ctx.body = {data: ingredients};
+    },
+
+    async put(ctx) {
+        //pay attn wrt ingredient_tag duplication
     }
 };
