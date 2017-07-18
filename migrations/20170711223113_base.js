@@ -15,6 +15,8 @@ exports.up = function(knex) {
             table.string('name_singular').unique().notNullable();
             table.string('name_plural').notNullable();
             table.string('description');
+            //how to get the value of is_composite to index to
+            //whether relations in composing_ingredients have as parent...
             table.boolean('is_composite').defaultTo(false);
             table.float('serving_size').defaultTo(1);
             table.uuid('units').notNullable().references('units.id').onDelete('CASCADE');

@@ -11,11 +11,25 @@ const ingredientSchema = yup.object().shape({
             message: '${path} must be uuid',
             test: val => val ? isUUID(val) : true
         }),
-    nameSingular: yup.string().required().lowercase().trim(),
-    namePlural: yup.string().required().lowercase().trim(),
+    nameSingular: yup.string().lowercase().trim().when('$isUpdate', (isUpdate, schema) => isUpdate
+        ? schema
+        : schema.required()
+    ),
+    namePlural: yup.string().lowercase().trim().when('$isUpdate', (isUpdate, schema) => isUpdate
+        ? schema
+        : schema.required()
+    ),
     description: yup.string().trim(),
-    isComposite: yup.boolean().default(false),
-    servingSize: yup.number().default(1),
+    //how to index this to presence of relations in composing_ingredients
+    //that use it as a parent?
+    isComposite: yup.boolean().when('$isUpdate', (isUpdate, schema) => isUpdate
+        ? schema
+        : schema.default(false)
+    ),
+    servingSize: yup.number().when('$isUpdate', (isUpdate, schema) => isUpdate
+        ? schema
+        : schema.default(1)
+    ),
     units: yup.string()
         .test({
             name: 'units',
@@ -26,7 +40,7 @@ const ingredientSchema = yup.object().shape({
         .test({
             name: 'category',
             message: '${path} must be uuid',
-            test: val => isUUID(val)
+            test: val => val ? isUUID(val) : true
         }),
     tags: yup.array().ensure().of(yup.string().test({
         name: 'tags',
@@ -43,6 +57,9 @@ const ingredientSchema = yup.object().shape({
     }))
 })
 .noUnknown()
-.concat(timeStampSchema);
+.when('$isUpdate', (isUpdate, schema) => isUpdate
+    ? schema
+    : schema.concat(timeStampSchema)
+);
 
 module.exports = ingredientSchema;
