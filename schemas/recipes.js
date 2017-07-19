@@ -7,13 +7,50 @@ const isUUID = require('validator/lib/isUUID');
 const recipeSchema = yup.object().shape({
     id: yup.string()
         .test({
-            name: 'ide',
+            name: 'id',
             message: '${path} must be uuid',
             test: val => val ? isUUID(val) : true
         }),
-    title: yup.string().required().trim(),
-    description: yup.string().required().trim(),
-    mainImageUrl: yup.string().required().url().trim()
+    title: yup.string().trim().when('$isUpdate', (isUpdate, schema) => isUpdate
+        ? schema
+        : schema.required()
+    ),
+    description: yup.string().trim().when('$isUpdate', (isUpdate, schema) => isUpdate
+        ? schema
+        : schema.required()
+    ),
+    mainImageUrl: yup.string().url().trim().when('$isUpdate', (isUpdate, schema) => isUpdate
+        ? schema
+        : schema.required()
+    ),
+    ingredients: yup.array().of(yup.string().test({
+        name: 'ingredients',
+        message: '${path} must be uuid',
+        test: val => isUUID(val)
+    })).when('$isUpdate', (isUpdate, schema) => isUpdate
+        ? schema.ensure()
+        : schema.min(1)
+    ),
+    seasonings: yup.array().ensure().of(yup.string().test({
+        name: 'seasonings',
+        message: '${path} must be uuid',
+        test: val => isUUID(val)
+    })),
+    steps: yup.array().of(yup.object().shape({
+        text: yup.string().required().trim(),
+        tags: yup.array().ensure().of(yup.string().test({
+            name: 'stepTags',
+            message: '${path} must be uuid',
+            test: val => isUUID(val)
+        })),
+        order: yup.number().min(1).integer().when('$isUpdate', (isUpdate, schema) => isUpdate
+            ? schema
+            : schema.required()
+        )
+    })).when('$isUpdate', (isUpdate, schema) => isUpdate
+        ? schema.ensure()
+        : schema.min(1)
+    )
 })
 .noUnknown()
 .concat(timeStampSchema);

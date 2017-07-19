@@ -8,7 +8,7 @@ const isUUID = require('validator/lib/isUUID');
 
 const {getSelectQueries, ingredientsFetchFields} = require('../lib/queries');
 const {PREFIX} = require('../lib/constants');
-const {relationsMap} = require('../lib/relations-map');
+const relationsMap = require('../relations-map').ingredientsMap;
 const errors = require('../lib/errors');
 
 const Ingredient = require('../objects/ingredient.js');
@@ -59,7 +59,21 @@ module.exports = {
             //insert
             await ctx.app.db('ingredient_tags').insert(tags);
         }
-        ctx.body = {data: ingredient};
+        let retIngredient = await ctx.app.db('ingredients')
+            .leftJoin('ingredient_tags', 'ingredients.id', 'ingredient_tags.ingredient')
+            .leftJoin('tags', 'ingredient_tags.tag', 'tags.id')
+            .leftJoin('units', 'ingredients.units', 'units.id')
+            .leftJoin('composing_ingredients', 'ingredients.id', 'composing_ingredients.parent')
+            .leftJoin('ingredients as child_ingredients', 'composing_ingredients.child', 'child_ingredients.id')
+            .select(...getSelectQueries('ingredients', PREFIX.INGREDIENTS, ingredientsFetchFields.ingredients),
+                ...getSelectQueries('ingredient_tags', PREFIX.INGREDIENT_TAGS, ingredientsFetchFields.ingredientTags),
+                ...getSelectQueries('tags', PREFIX.TAGS, ingredientsFetchFields.tags),
+                ...getSelectQueries('units', PREFIX.UNITS, ingredientsFetchFields.units),
+                ...getSelectQueries('composing_ingredients', PREFIX.COMPOSING_INGREDIENTS, ingredientsFetchFields.composingIngredients),
+                ...getSelectQueries('child_ingredients', PREFIX.CHILD_INGREDIENTS, ingredientsFetchFields.childIngredients))
+            .where('ingredients.id', id);
+            retIngredient = joinJs.mapOne(retIngredient, relationsMap, 'ingredientMap', PREFIX.INGREDIENTS + '_');
+        ctx.body = {data: retIngredient};
     },
 
     //make more sophisticated later? Pagination, specific key projection
@@ -128,7 +142,6 @@ module.exports = {
             queries.push(ctx.app.db('ingredient_tags').insert(tagRelations));
         }
         if(ingredient.composingIngredients && ingredient.composingIngredients.length > 0) {
-            console.log('composingIngredients', ingredient.composingIngredients);
             let composites = ingredient.composingIngredients.map(composing => ({
                 id: uuid(),
                 parent: id,

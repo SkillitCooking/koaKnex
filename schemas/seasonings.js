@@ -11,10 +11,24 @@ const seasoningSchema = yup.object().shape({
             message: '${path} must be uuid',
             test: val => val ? isUUID(val) : true
         }),
-    name: yup.string().required().lowercase().trim(),
-    isComposite: yup.boolean().default(false)
+    name: yup.string().lowercase().trim().when('$isUpdate', (isUpdate, schema) => isUpdate
+        ? schema
+        : schema.required()
+    ),
+    isComposite: yup.boolean().when('$isUpdate', (isUpdate, schema) => isUpdate
+        ? schema
+        : schema.default(false)
+    ),
+    composingSeasonings: yup.array().ensure().of(yup.string().test({
+        name: 'composing',
+        message: '${path} must be uuid',
+        test: val => isUUID(val)
+    }))
 })
 .noUnknown()
-.concat(timeStampSchema);
+.when('$isUpdate', (isUpdate, schema) => isUpdate
+    ? schema
+    : schema.concat(timeStampSchema)
+);
 
 module.exports = seasoningSchema;

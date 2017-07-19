@@ -5,7 +5,8 @@
 
 //will have to map below to Prefixes...
 
-const {PREFIX} = require('./constants');
+const {PREFIX} = require('../lib/constants');
+const {propWithPrefix} = require('../lib/helpers');
 
 const ingredientFields = [
     'id',
@@ -55,10 +56,7 @@ const relationsMap = [
     {
         mapId: 'tagMap',
         idProperty: {name: 'id', column: PREFIX.TAGS + '_id'},
-        //PREFIX.TAGS needed?? both here and above...
-        properties: [...tagFields.map(field => {
-                return {name: field, column: PREFIX.TAGS + '_' + field};
-            }),
+        properties: [...tagFields.map(propWithPrefix(PREFIX.TAGS)),
             {name: 'ingTagId', column: PREFIX.INGREDIENT_TAGS + '_id'}, 
             {name: 'type', column: PREFIX.INGREDIENT_TAGS + '_type'}
         ]
@@ -66,10 +64,7 @@ const relationsMap = [
     {
         mapId: 'childIngredientMap',
         idProperty: {name: 'id', column: PREFIX.CHILD_INGREDIENTS + '_id'},
-        //PREFIX.CHILDINGREDIENTS needed?? both here and above...
-        properties: [...childIngredientFields.map(field => {
-                return {name: field, column: PREFIX.CHILD_INGREDIENTS + '_' + field};
-            }), 
+        properties: [...childIngredientFields.map(propWithPrefix(PREFIX.CHILD_INGREDIENTS)), 
             {name: 'compIngId', column: PREFIX.COMPOSING_INGREDIENTS + '_id'},
             {name: 'isOptional', column: PREFIX.COMPOSING_INGREDIENTS + '_is_optional'}
         ]

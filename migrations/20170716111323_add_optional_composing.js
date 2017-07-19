@@ -7,7 +7,7 @@ exports.up = function(knex) {
 
 exports.down = function(knex) {
     return knex.schema
-        .table('units', function(table) {
+        .table('composing_ingredients', function(table) {
             table.dropColumn('is_optional');
         });
 };
