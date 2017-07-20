@@ -51,7 +51,15 @@ const relationsMap = [
         collections: [
             {name: 'steps', mapId: 'stepsMap'},
             {name: 'ingredients', mapId: 'ingredientsMap'},
-            {name: 'seasonings', mapId: 'seasoningsMap'}
+            {name: 'seasonings', mapId: 'seasoningsMap'},
+            {name: 'tags', mapId: 'recipeTagsMap'}
+        ]
+    },
+    {
+        mapId: 'recipesTagsMap',
+        idProperty: {name: 'id', column: PREFIX.TAGS + '_id'},
+        properties: [...tagFields.map(propWithPrefix(PREFIX.TAGS)),
+            {name: 'recipeTagId', column: PREFIX.RECIPE_TAGS + '_id'}
         ]
     },
     {

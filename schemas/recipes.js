@@ -43,14 +43,16 @@ const recipeSchema = yup.object().shape({
             message: '${path} must be uuid',
             test: val => isUUID(val)
         })),
-        order: yup.number().min(1).integer().when('$isUpdate', (isUpdate, schema) => isUpdate
-            ? schema
-            : schema.required()
-        )
+        order: yup.number().min(1).integer().required()
     })).when('$isUpdate', (isUpdate, schema) => isUpdate
         ? schema.ensure()
         : schema.min(1)
-    )
+    ),
+    tags: yup.array().ensure().of(yup.string().test({
+        name: 'tags',
+        message: '${path} must be uuid',
+        test: val => isUUID(val)
+    }))
 })
 .noUnknown()
 .concat(timeStampSchema);

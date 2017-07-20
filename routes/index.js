@@ -9,12 +9,14 @@ const ingredients = require('./ingredients');
 const units = require('./units');
 const tags = require('./tags');
 const seasonings = require('./seasonings');
+const recipes = require('./recipes');
 
 api.use(users);
 api.use(ingredients);
 api.use(units);
 api.use(tags);
 api.use(seasonings);
+api.use(recipes);
 
 router.use('/api', api.routes());
 
