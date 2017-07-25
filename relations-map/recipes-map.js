@@ -56,24 +56,24 @@ const relationsMap = [
         ]
     },
     {
-        mapId: 'recipesTagsMap',
-        idProperty: {name: 'id', column: PREFIX.TAGS + '_id'},
-        properties: [...tagFields.map(propWithPrefix(PREFIX.TAGS)),
+        mapId: 'recipeTagsMap',
+        idProperty: {name: 'id', column: PREFIX.R_TAGS + '_id'},
+        properties: [...tagFields.map(propWithPrefix(PREFIX.R_TAGS)),
             {name: 'recipeTagId', column: PREFIX.RECIPE_TAGS + '_id'}
         ]
     },
     {
         mapId: 'stepsMap',
         idProperty: {name: 'id', column: PREFIX.STEPS + '_id'},
-        properties: [...stepFields],
+        properties: [...stepFields.map(propWithPrefix(PREFIX.STEPS))],
         collections: [
             {name: 'tags', mapId: 'stepTagsMap'}
         ]
     },
     {
         mapId: 'stepTagsMap',
-        idProperty: {name: 'id', column: PREFIX.TAGS + '_id'},
-        properties: [...tagFields.map(propWithPrefix(PREFIX.TAGS)),
+        idProperty: {name: 'id', column: PREFIX.S_TAGS + '_id'},
+        properties: [...tagFields.map(propWithPrefix(PREFIX.S_TAGS)),
             {name: 'stepTagId', column: PREFIX.STEP_TAGS + '_id'}    
         ]
     },
@@ -99,8 +99,8 @@ const relationsMap = [
     },
     {
         mapId: 'ingredientTagsMap',
-        idProperty: {name: 'id', column: PREFIX.TAGS + '_id'},
-        properties: [...tagFields.map(propWithPrefix(PREFIX.TAGS)),
+        idProperty: {name: 'id', column: PREFIX.I_TAGS + '_id'},
+        properties: [...tagFields.map(propWithPrefix(PREFIX.I_TAGS)),
             {name: 'ingTagId', column: PREFIX.INGREDIENT_TAGS + '_id'}
         ]
     },

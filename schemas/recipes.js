@@ -23,10 +23,14 @@ const recipeSchema = yup.object().shape({
         ? schema
         : schema.required()
     ),
-    ingredients: yup.array().of(yup.string().test({
-        name: 'ingredients',
-        message: '${path} must be uuid',
-        test: val => isUUID(val)
+    ingredients: yup.array().of(yup.object().shape({
+        ingredient: yup.string().required().test({
+            name: 'ingredient',
+            message: '${path} must be uuid',
+            test: val => isUUID(val)
+        }),
+        isFrozen: yup.boolean().default(false),
+        proportion: yup.number().positive().default(1)
     })).when('$isUpdate', (isUpdate, schema) => isUpdate
         ? schema.ensure()
         : schema.min(1)

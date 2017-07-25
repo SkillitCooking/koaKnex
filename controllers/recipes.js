@@ -25,12 +25,13 @@ module.exports = {
         };
         recipe = await ctx.app.schemas.recipes.validate(recipe, validationOpts);
         recipe.id = uuid();
-        let sanitizedRecipe = _.omit(recipe, ['ingredients', 'seasonings', 'steps']);
+        let sanitizedRecipe = _.omit(recipe, ['ingredients', 'seasonings', 'steps', 'tags']);
         await ctx.app.db('recipes').insert(humps.decamelizeKeys(sanitizedRecipe));
         //insert steps and stepTags
         let stepTags = [];
         recipe.steps.forEach((step) => {
             step.id = uuid();
+            step.recipe = recipe.id;
             if(step.tags && step.tags.length > 0) {
                 stepTags.push(...step.tags.map((tag) => ({
                     id: uuid(),
@@ -39,7 +40,9 @@ module.exports = {
                 })));
             }
         });
-        let sanitizedSteps = _.omit(recipe.step, ['tags']);
+        let sanitizedSteps = recipe.steps.map((step) => {
+            return _.omit(step, ['tags']);
+        });
         await ctx.app.db('steps').insert(humps.decamelizeKeys(sanitizedSteps));
         if(stepTags.length > 0) {
             await ctx.app.db('step_tags').insert(stepTags);
@@ -54,8 +57,9 @@ module.exports = {
             await ctx.app.db('recipe_tags').insert(recipeTags);
         }
         //insert recipeIngredients
-        recipe.ingredients.forEach((ingred) => {
+        let recipeIngredients = recipe.ingredients.map(ingred => {
             ingred.id = uuid();
+            ingred.recipe = recipe.id;
         });
         await ctx.app.db('recipe_ingredients').insert(humps.decamelizeKeys(recipe.ingredients));
         //insert recipeSeasonings
@@ -78,13 +82,11 @@ module.exports = {
             .leftJoin('recipe_seasonings', 'recipes.id', 'recipe_seasonings.recipe')
             .leftJoin('seasonings', 'recipe_seasonings.seasoning', 'seasonings.id')
             .leftJoin('recipe_tags', 'recipes.id', 'recipe_tags.recipe')
-            .leftJoin('tags', function() {
-                this.on('tags.id', '=', 'recipe_tags.tag')
-                    .orOn('tags.id', '=', 'ingredient_tags.tag')
-                    .orOn('tags.id', '=', 'step_tags.tag')
-            })
+            .leftJoin('tags as r_tags', 'r_tags.id', 'recipe_tags.tag')
+            .leftJoin('tags as s_tags', 's_tags.id', 'step_tags.tag')
+            .leftJoin('tags as i_tags', 'i_tags.id', 'ingredient_tags.tag')
             .select(...getSelectQueries('recipes', PREFIX.RECIPES, recipesFetchFields.recipes),
-                ...getSelectQueries('steps', PREFIX.STEPS, recipesFetchFields.ingredients),
+                ...getSelectQueries('steps', PREFIX.STEPS, recipesFetchFields.steps),
                 ...getSelectQueries('step_tags', PREFIX.STEP_TAGS, recipesFetchFields.stepTags),
                 ...getSelectQueries('recipe_ingredients', PREFIX.RECIPE_INGREDIENTS, recipesFetchFields.recipeIngredients),
                 ...getSelectQueries('ingredients', PREFIX.INGREDIENTS, recipesFetchFields.ingredients),
@@ -92,9 +94,13 @@ module.exports = {
                 ...getSelectQueries('ingredient_tags', PREFIX.INGREDIENT_TAGS, recipesFetchFields.ingredientTags),
                 ...getSelectQueries('seasonings', PREFIX.SEASONINGS, recipesFetchFields.seasonings),
                 ...getSelectQueries('recipe_seasonings', PREFIX.RECIPE_SEASONINGS, recipesFetchFields.recipeSeasonings),
-                ...getSelectQueries('recipe_tags', PREFIX.RECIPE_TAGS, recipesFetchFields.recipeTags))
+                ...getSelectQueries('recipe_tags', PREFIX.RECIPE_TAGS, recipesFetchFields.recipeTags),
+                ...getSelectQueries('r_tags', PREFIX.R_TAGS, recipesFetchFields.tags),
+                ...getSelectQueries('s_tags', PREFIX.S_TAGS, recipesFetchFields.tags),
+                ...getSelectQueries('i_tags', PREFIX.I_TAGS, recipesFetchFields.tags))
             .where('recipes.id', recipe.id);
-        retRecipe = joinJs.mapOne(retRecipe, relationsMap, 'recipeMap', PREFIX.RECIPES + '_');
+            console.log('retRecipe', retRecipe);
+        retRecipe = joinJs.mapOne(retRecipe, relationsMap, 'recipesMap', PREFIX.RECIPES + '_');
         ctx.body = {data: retRecipe};
     },
 
