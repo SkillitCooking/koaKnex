@@ -5,7 +5,7 @@
 
 //will have to map below to Prefixes...
 
-const {PREFIX} = require('../lib/constants');
+const {PREFIX, MAP_IDS} = require('../lib/constants');
 const {propWithPrefix} = require('../lib/helpers');
 
 const ingredientFields = [
@@ -37,24 +37,24 @@ const unitsFields = [
 
 const relationsMap = [
     {
-        mapId: 'ingredientMap',
+        mapId: MAP_IDS.INGREDIENTS,
         idProperty: 'id',
         properties: [...ingredientFields],
         associations: [
-            {name: 'units', mapId: 'unitsMap', columnPrefix: PREFIX.UNITS + '_'}
+            {name: 'units', mapId: MAP_IDS.UNITS, columnPrefix: PREFIX.UNITS + '_'}
         ],
         collections: [
-            {name: 'tags', mapId: 'tagMap'},
-            {name: 'childIngredients', mapId: 'childIngredientMap'}
+            {name: 'tags', mapId: MAP_IDS.TAG},
+            {name: 'childIngredients', mapId: MAP_IDS.CHILD_INGREDIENT}
         ]
     },
     {
-        mapId: 'unitsMap',
+        mapId: MAP_IDS.UNITS,
         idProperty: 'id',
         properties: [...unitsFields]
     },
     {
-        mapId: 'tagMap',
+        mapId: MAP_IDS.TAG,
         idProperty: {name: 'id', column: PREFIX.TAGS + '_id'},
         properties: [...tagFields.map(propWithPrefix(PREFIX.TAGS)),
             {name: 'ingTagId', column: PREFIX.INGREDIENT_TAGS + '_id'}, 
@@ -62,7 +62,7 @@ const relationsMap = [
         ]
     },
     {
-        mapId: 'childIngredientMap',
+        mapId: MAP_IDS.CHILD_INGREDIENT,
         idProperty: {name: 'id', column: PREFIX.CHILD_INGREDIENTS + '_id'},
         properties: [...childIngredientFields.map(propWithPrefix(PREFIX.CHILD_INGREDIENTS)), 
             {name: 'compIngId', column: PREFIX.COMPOSING_INGREDIENTS + '_id'},

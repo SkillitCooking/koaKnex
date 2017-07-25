@@ -13,7 +13,40 @@ const errors = require('../lib/errors');
 
 module.exports = {
     async get(ctx) {
-
+        const {body} = ctx.request;
+        let {ids = []} = body;
+        let query = ctx.app.db('recipes')
+            .leftJoin('steps', 'recipes.id', 'steps.recipe')
+            .leftJoin('step_tags', 'steps.id', 'step_tags.step')
+            .leftJoin('recipe_ingredients', 'recipes.id', 'recipe_ingredients.recipe')
+            .leftJoin('ingredients', 'recipe_ingredients.ingredient', 'ingredients.id')
+            .leftJoin('ingredient_tags', 'ingredients.id', 'ingredient_tags.ingredient')
+            .leftJoin('units', 'ingredients.units', 'units.id')
+            .leftJoin('recipe_seasonings', 'recipes.id', 'recipe_seasonings.recipe')
+            .leftJoin('seasonings', 'recipe_seasonings.seasoning', 'seasonings.id')
+            .leftJoin('recipe_tags', 'recipes.id', 'recipe_tags.recipe')
+            .leftJoin('tags as r_tags', 'r_tags.id', 'recipe_tags.tag')
+            .leftJoin('tags as s_tags', 's_tags.id', 'step_tags.tag')
+            .leftJoin('tags as i_tags', 'i_tags.id', 'ingredient_tags.tag')
+            .select(...getSelectQueries('recipes', PREFIX.RECIPES, recipesFetchFields.recipes),
+                ...getSelectQueries('steps', PREFIX.STEPS, recipesFetchFields.steps),
+                ...getSelectQueries('step_tags', PREFIX.STEP_TAGS, recipesFetchFields.stepTags),
+                ...getSelectQueries('recipe_ingredients', PREFIX.RECIPE_INGREDIENTS, recipesFetchFields.recipeIngredients),
+                ...getSelectQueries('ingredients', PREFIX.INGREDIENTS, recipesFetchFields.ingredients),
+                ...getSelectQueries('units', PREFIX.UNITS, recipesFetchFields.units),
+                ...getSelectQueries('ingredient_tags', PREFIX.INGREDIENT_TAGS, recipesFetchFields.ingredientTags),
+                ...getSelectQueries('seasonings', PREFIX.SEASONINGS, recipesFetchFields.seasonings),
+                ...getSelectQueries('recipe_seasonings', PREFIX.RECIPE_SEASONINGS, recipesFetchFields.recipeSeasonings),
+                ...getSelectQueries('recipe_tags', PREFIX.RECIPE_TAGS, recipesFetchFields.recipeTags),
+                ...getSelectQueries('r_tags', PREFIX.R_TAGS, recipesFetchFields.tags),
+                ...getSelectQueries('s_tags', PREFIX.S_TAGS, recipesFetchFields.tags),
+                ...getSelectQueries('i_tags', PREFIX.I_TAGS, recipesFetchFields.tags))
+        if(ids.length > 0) {
+            query.whereIn('recipes.id', ids);
+        }
+        let recipes = await query;
+        recipes = joinJs.map(recipes, relationsMap, 'recipesMap', PREFIX.RECIPES + '_');
+        ctx.body = {data: recipes};
     },
 
     async post(ctx) {
@@ -99,7 +132,6 @@ module.exports = {
                 ...getSelectQueries('s_tags', PREFIX.S_TAGS, recipesFetchFields.tags),
                 ...getSelectQueries('i_tags', PREFIX.I_TAGS, recipesFetchFields.tags))
             .where('recipes.id', recipe.id);
-            console.log('retRecipe', retRecipe);
         retRecipe = joinJs.mapOne(retRecipe, relationsMap, 'recipesMap', PREFIX.RECIPES + '_');
         ctx.body = {data: retRecipe};
     },

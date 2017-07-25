@@ -1,6 +1,6 @@
 'use strict';
 
-const {PREFIX} = require('../lib/constants');
+const {PREFIX, MAP_IDS} = require('../lib/constants');
 const {propWithPrefix} = require('../lib/helpers');
 
 const recipeFields = [
@@ -45,40 +45,40 @@ const seasoningsFields = [
 
 const relationsMap = [
     {
-        mapId: 'recipesMap',
+        mapId: MAP_IDS.RECIPES,
         idProperty: 'id',
         properties: [...recipeFields],
         collections: [
-            {name: 'steps', mapId: 'stepsMap'},
-            {name: 'ingredients', mapId: 'ingredientsMap'},
-            {name: 'seasonings', mapId: 'seasoningsMap'},
-            {name: 'tags', mapId: 'recipeTagsMap'}
+            {name: 'steps', mapId: MAP_IDS.STEPS},
+            {name: 'ingredients', mapId: MAP_IDS.INGREDIENTS},
+            {name: 'seasonings', mapId: MAP_IDS.SEASONINGS},
+            {name: 'tags', mapId: MAP_IDS.RECIPE_TAGS}
         ]
     },
     {
-        mapId: 'recipeTagsMap',
+        mapId: MAP_IDS.RECIPE_TAGS,
         idProperty: {name: 'id', column: PREFIX.R_TAGS + '_id'},
         properties: [...tagFields.map(propWithPrefix(PREFIX.R_TAGS)),
             {name: 'recipeTagId', column: PREFIX.RECIPE_TAGS + '_id'}
         ]
     },
     {
-        mapId: 'stepsMap',
+        mapId: MAP_IDS.STEPS,
         idProperty: {name: 'id', column: PREFIX.STEPS + '_id'},
         properties: [...stepFields.map(propWithPrefix(PREFIX.STEPS))],
         collections: [
-            {name: 'tags', mapId: 'stepTagsMap'}
+            {name: 'tags', mapId: MAP_IDS.STEP_TAGS}
         ]
     },
     {
-        mapId: 'stepTagsMap',
+        mapId: MAP_IDS.STEP_TAGS,
         idProperty: {name: 'id', column: PREFIX.S_TAGS + '_id'},
         properties: [...tagFields.map(propWithPrefix(PREFIX.S_TAGS)),
             {name: 'stepTagId', column: PREFIX.STEP_TAGS + '_id'}    
         ]
     },
     {
-        mapId: 'ingredientsMap',
+        mapId: MAP_IDS.INGREDIENTS,
         idProperty: {name: 'id', column: PREFIX.INGREDIENTS + '_id'},
         properties: [...ingredientFields.map(propWithPrefix(PREFIX.INGREDIENTS)),
             {name: 'recipeIngId', column: PREFIX.RECIPE_INGREDIENTS + '_id'},
@@ -86,26 +86,26 @@ const relationsMap = [
             {name: 'proportion', column: PREFIX.RECIPE_INGREDIENTS + 'proportion'}
         ],
         associations: [
-            {name: 'units', mapId: 'unitsMap', columnPrefix: PREFIX.UNITS + '_'}
+            {name: 'units', mapId: MAP_IDS.UNITS, columnPrefix: PREFIX.UNITS + '_'}
         ],
         collections: [
-            {name: 'tags', mapId: 'ingredientTagsMap'}
+            {name: 'tags', mapId: MAP_IDS.INGREDIENT_TAGS}
         ]
     },
     {
-        mapId: 'unitsMap',
+        mapId: MAP_IDS.UNITS,
         idProperty: 'id',
         properties: [...unitsFields]
     },
     {
-        mapId: 'ingredientTagsMap',
+        mapId: MAP_IDS.INGREDIENT_TAGS,
         idProperty: {name: 'id', column: PREFIX.I_TAGS + '_id'},
         properties: [...tagFields.map(propWithPrefix(PREFIX.I_TAGS)),
             {name: 'ingTagId', column: PREFIX.INGREDIENT_TAGS + '_id'}
         ]
     },
     {
-        mapId: 'seasoningsMap',
+        mapId: MAP_IDS.SEASONINGS,
         idProperty: {name: 'id', column: PREFIX.SEASONINGS + '_id'},
         properties: [...seasoningsFields.map(propWithPrefix(PREFIX.SEASONINGS)),
             {name: 'recipeSeaId', column: PREFIX.RECIPE_SEASONINGS + '_id'}

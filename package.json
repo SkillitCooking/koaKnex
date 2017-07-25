@@ -4,7 +4,8 @@
   "description": "API for Skillit Admin",
   "main": "index.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "dev-start": "nodemon bin/server.js"
   },
   "author": "Dane Louis Bratz",
   "license": "ISC",
