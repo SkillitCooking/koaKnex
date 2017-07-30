@@ -83,7 +83,7 @@ const relationsMap = [
         properties: [...ingredientFields.map(propWithPrefix(PREFIX.INGREDIENTS)),
             {name: 'recipeIngId', column: PREFIX.RECIPE_INGREDIENTS + '_id'},
             {name: 'isFrozen', column: PREFIX.RECIPE_INGREDIENTS + '_is_frozen'},
-            {name: 'proportion', column: PREFIX.RECIPE_INGREDIENTS + 'proportion'}
+            {name: 'proportion', column: PREFIX.RECIPE_INGREDIENTS + '_proportion'}
         ],
         associations: [
             {name: 'units', mapId: MAP_IDS.UNITS, columnPrefix: PREFIX.UNITS + '_'}

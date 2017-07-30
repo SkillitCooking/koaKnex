@@ -22,8 +22,8 @@ function error(opts) {
             await next();
             if(ctx.response.status === 404 && !ctx.response.body) ctx.throw(404);
         } catch (err) {
+            console.log('EROROROROE', err);
             //set ctx.status
-            console.log('here here here');
             ctx.status = typeof err.status === 'number' ? err.status : 500;
             if(err.errors) {
                 err.message += ' ' + err.errors.join('--');

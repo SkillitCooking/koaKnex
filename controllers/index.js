@@ -7,6 +7,12 @@ const units = require('./units');
 const seasonings = require('./seasonings');
 const recipes = require('./recipes');
 
+/**
+ * Explore how to use transactions with knex in layered queries that
+ * may be conditional and need rollback...
+ * EG steps with recipes
+ */
+
 module.exports = {
     users,
     ingredients,

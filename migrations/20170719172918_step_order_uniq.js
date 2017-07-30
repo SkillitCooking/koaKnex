@@ -1,6 +1,8 @@
 'use strict';
 exports.up = function(knex) {
     return knex.schema
+    //is the below unique constrain going to be a problem
+    //wrt updates?
         .alterTable('steps', function(table) {
             table.unique(['recipe', 'order']);
         })

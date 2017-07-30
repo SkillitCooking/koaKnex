@@ -9,7 +9,7 @@ const stepSchema = yup.object().shape({
         .test({
             name: 'id',
             message: '${path} must be uuid',
-            test: val => val ? isUUID(val) : true
+            test: val => isUUID(val)
         }),
     recipe: yup.string()
         .test({
@@ -17,10 +17,30 @@ const stepSchema = yup.object().shape({
             message: '${path} must be uuid',
             test: val => val ? isUUID(val) : true
         }),
-    text: yup.string().required().trim(),
-    order: yup.number().integer().min(1).required()
+    text: yup.string().trim().when('$isUpdate', (isUpdate, schema) => isUpdate
+        ? schema
+        : schema.required()
+    ),
+    order: yup.number().integer().min(1).when('$isUpdate', (isUpdate, schema) => isUpdate
+        ? schema
+        : schema.required()
+    ),
+    oldOrder: yup.number().integer().min(1),
+    tags: yup.array().of(yup.string().test({
+        name: 'stepTag',
+        message: '${path} must be uuid',
+        test: val => isUUID(val)
+    })),
+    tagsToRemove: yup.array().of(yup.string().test({
+        name: 'removeStepTags',
+        message: '${path} must be uuid',
+        test: val => isUUID(val)
+    }))
 })
 .noUnknown()
-.concat(timeStampSchema);
+.when('$isUpdate', (isUpdate, schema) => isUpdate
+    ? schema
+    : schema.concat(timeStampSchema)
+);
 
 module.exports = stepSchema;

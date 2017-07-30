@@ -7,7 +7,7 @@ const joinJs = require('join-js').default;
 const isUUID = require('validator/lib/isUUID');
 
 const {getSelectQueries, seasoningsFetchFields} = require('../lib/queries');
-const {PREFIX} = require('../lib/constants');
+const {PREFIX, MAP_IDS} = require('../lib/constants');
 const relationsMap = require('../relations-map').seasoningsMap;
 const errors = require('../lib/errors');
 
@@ -25,7 +25,7 @@ module.exports = {
             query.whereIn('seasonings.id', ids);
         }
         let seasonings = await query;
-        seasonings = joinJs.map(seasonings, relationsMap, 'seasoningMap', PREFIX.SEASONINGS + '_');
+        seasonings = joinJs.map(seasonings, relationsMap, MAP_IDS.SEASONINGS, PREFIX.SEASONINGS + '_');
         ctx.body = {data: seasonings};
     },
 
@@ -56,7 +56,7 @@ module.exports = {
                 ...getSelectQueries('composing_seasonings', PREFIX.COMPOSING_SEASONINGS, seasoningsFetchFields.composingSeasonings),
                 ...getSelectQueries('child_seasonings', PREFIX.CHILD_SEASONINGS, seasoningsFetchFields.childSeasonings))
             .where('seasonings.id', seasoning.id);
-        retSeasoning = joinJs.mapOne(retSeasoning, relationsMap, 'seasoningMap', PREFIX.SEASONINGS + '_');
+        retSeasoning = joinJs.mapOne(retSeasoning, relationsMap, MAP_IDS.SEASONINGS, PREFIX.SEASONINGS + '_');
         ctx.body = {data: retSeasoning};
     },
 
@@ -96,7 +96,7 @@ module.exports = {
                 ...getSelectQueries('composing_seasonings', PREFIX.COMPOSING_SEASONINGS, seasoningsFetchFields.composingSeasonings),
                 ...getSelectQueries('child_seasonings', PREFIX.CHILD_SEASONINGS, seasoningsFetchFields.childSeasonings))
             .where('seasonings.id', id);
-        retSeasoning = joinJs.mapOne(retSeasoning, relationsMap, 'seasoningMap', PREFIX.SEASONINGS + '_');
+        retSeasoning = joinJs.mapOne(retSeasoning, relationsMap, MAP_IDS.SEASONINGS, PREFIX.SEASONINGS + '_');
         ctx.body = {data: retSeasoning};
     },
 

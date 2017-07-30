@@ -9,7 +9,7 @@ const recipeIngredientSchema = yup.object().shape({
         .test({
             name: 'id',
             message: '${path} must be uuid',
-            test: val => val ? isUUID(val) : true
+            test: val => isUUID(val)
         }),
     recipe: yup.string()
         .test({
@@ -23,10 +23,19 @@ const recipeIngredientSchema = yup.object().shape({
             message: '${path} must be uuid',
             test: val => val ? isUUID(val) : true
         }),
-    isFrozen: yup.boolean().default(false),
-    proportion: yup.number().default(1)
+    isFrozen: yup.boolean().when('$isUpdate', (isUpdate, schema) => isUpdate
+        ? schema
+        : schema.default(false)
+    ),
+    proportion: yup.number().when('$isUpdate', (isUpdate, schema) => isUpdate
+        ? schema
+        : schema.default(1)
+    )
 })
 .noUnknown()
-.concat(timeStampSchema);
+.when('$isUpdate', (isUpdate, schema) => isUpdate
+    ? schema
+    : schema.concat(timeStampSchema)
+);
 
 module.exports = recipeIngredientSchema;
