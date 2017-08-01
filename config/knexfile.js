@@ -3,7 +3,10 @@
 const path = require('path');
 const ROOT = path.resolve(__dirname, '../');
 
-require('dotenv').config({path: path.join(ROOT, 'bin/.env')});
+const {moduleAvailable} = require('../lib/helpers');
+if(moduleAvailable('dotenv')) {
+    require('dotenv').config({path: path.join(ROOT, 'bin/.env')});
+}
 
 const {DB_CLIENT, DB_CONNECTION} = process.env;
 

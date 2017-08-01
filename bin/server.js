@@ -1,6 +1,10 @@
 'use strict';
 
-require('dotenv').config();
+const {moduleAvailable} = require('../lib/helpers');
+
+if(moduleAvailable('dotenv')) {
+    require('dotenv').config();
+}
 
 //port and host set in config
 const {server: {port, host}} = require('../config');

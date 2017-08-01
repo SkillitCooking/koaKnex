@@ -1,6 +1,9 @@
 'use strict';
 
-require('dotenv').config();
+const {moduleAvailable} = require('../lib/helpers');
+if(moduleAvailable('dotenv')) {
+    require('dotenv').config();
+}
 const ctrl = require('../controllers').users
 const errors = require('../lib/errors');
 const bcrypt = require('bcrypt');
