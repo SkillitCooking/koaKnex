@@ -20,8 +20,14 @@ module.exports = {
     async balls (ctx) {
         //ctx.throw(400, 'uh oh', {but: 'not really'});
         console.log('here boose');
-        await ctx.app.db('users').where('is_admin', true).del();
-        ctx.body = {message: 'siiiit'};
+        //await ctx.app.db('users').where('is_admin', true).del();
+        let user = {
+            id: uuid(),
+            username: 'Kenneth',
+            password: 'fakerfakerfaker',
+        };
+        user = await ctx.app.db('users').insert(user).returning(['id', 'username', 'email']);
+        ctx.body = {message: 'siiiit', user: user};
     },
     //TODO: should eventually protect against being able to willy-nilly
     //set 'isAdmin'...
