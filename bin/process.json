@@ -1,0 +1,37 @@
+{
+    "apps": [
+        {
+            "name": "skillit-api",
+            "script": "./server.js",
+            "watch": true,
+            "env": {
+                "NODE_ENV": "development",
+                "PORT": "3000",
+                "SECRET": "secret",
+                "JWT_SECRET": "secret",
+                "DB_CLIENT": "sqlite3",
+                "CLIENT_PASSWORD": "tTptcVawXzzbDTNygO9Mc",
+                "LOG_TO_FILE": false
+            },
+            "env_staging": {
+                "NODE_ENV": "development",
+                "PORT": "3000",
+                "SECRET": "secret",
+                "JWT_SECRET": "secret",
+                "DB_CLIENT": "sqlite3",
+                "CLIENT_PASSWORD": "tTptcVawXzzbDTNygO9Mc",
+                "LOG_TO_FILE": false
+            },
+            "env_production": {
+                "NODE_ENV": "development",
+                "PORT": "3000",
+                "SECRET": "secret",
+                "JWT_SECRET": "secret",
+                "DB_CLIENT": "pg",
+                "DB_CONNECTION": "postgres://admin:TCVJXDLDPRHDNBTB@aws-us-west-2-portal.2.dblayer.com:16323/skillit",
+                "CLIENT_PASSWORD": "tTptcVawXzzbDTNygO9Mc",
+                "LOG_TO_FILE": true
+            }
+        }
+    ]
+}

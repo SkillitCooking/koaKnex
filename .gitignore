@@ -2,3 +2,4 @@ node_modules
 bin/.env
 data
 logs
+bin/process.json
