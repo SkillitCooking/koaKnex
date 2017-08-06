@@ -20,17 +20,8 @@ module.exports = {
     async balls (ctx) {
         //ctx.throw(400, 'uh oh', {but: 'not really'});
         console.log('here boose');
-        //await ctx.app.db('users').where('is_admin', true).del();
-        let user = {
-            id: uuid(),
-            username: 'Kenneth',
-            password: 'fakerfakerfaker',
-        };
-        user = await ctx.app.db('users').insert(user).returning(['id', 'username', 'email']);
-        ctx.body = {message: 'siiiit', user: user};
+        ctx.body = {message: 'siiiick brah'};
     },
-    //TODO: should eventually protect against being able to willy-nilly
-    //set 'isAdmin'...
     async post (ctx) {
         const {body} = ctx.request;
         //get user from body
@@ -41,6 +32,7 @@ module.exports = {
         };
         //validate user
         user = await ctx.app.schemas.users.validate(user, validationOpts);
+        user.isAdmin = false;
         //set id
         user.id = uuid();
         //hash password
@@ -52,6 +44,24 @@ module.exports = {
         //get user a token - can we expect there to be an id field here? I'm not so sure if not added explicitly
         user = generateJWTForUser(user);
         //respond
+        ctx.body = {user: _.omit(user, ['password'])};
+    },
+
+    async addAdmin(ctx) {
+        const {body} = ctx.request;
+        let {user = {}} = body;
+        const validationOpts = {
+            abortEarly: false,
+            context: {validatePassword: true}
+        };
+        //validate
+        user = await ctx.app.schemas.users.validate(user, validationOpts);
+        user.isAdmin = true;
+        user.id = uuid();
+        user.password = await bcrypt.hash(user.password, 10);
+        await ctx.app.db('users')
+            .insert(humps.decamelizeKeys(user));
+        user = generateJWTForUser(user);
         ctx.body = {user: _.omit(user, ['password'])};
     },
 
