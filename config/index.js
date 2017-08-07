@@ -37,7 +37,7 @@ module.exports = {
         exposeHeaders: ['Authorization'],
         credentials: true,
         allowMethods: ['GET', 'PUT', 'POST', 'DELETE'],
-        allowHeaders: ['Authorization', 'Content-Type'],
+        allowHeaders: ['Authorization', 'Content-Type', 'client-password'],
         keepHeadersOnError: true
     },
     bodyParser: {
