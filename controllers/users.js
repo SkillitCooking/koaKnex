@@ -107,7 +107,7 @@ module.exports = {
                 );
             }
 
-            user = generateJWTForUser(user);
+            user = generateJWTForUser(humps.camelizeKeys(user));
 
             ctx.body = {user: _.omit(user, ['password'])};
         }
