@@ -8,6 +8,7 @@ module.exports = function(opts) {
     return async function(ctx, next) {
         let user = ctx.state.user;
         let jwtData = ctx.state.jwtData;
+        console.log('jwtData', jwtData);
         switch(opts.authorization) {
             case AUTHORIZATION.CLIENT:
                 if(!has(jwtData, 'scopes') || !jwtData.scopes.includes('client')) {
