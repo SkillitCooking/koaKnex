@@ -180,6 +180,6 @@ module.exports = {
             ctx.throw(400, new errors.BadRequestError('Need an id with that DELETE, dawg'));
         }
         const data = await ctx.app.db('ingredients').where('id', id).returning(['id', 'name_singular']).del();
-        ctx.body = {data: data};
+        ctx.body = {data: humps.camelizeKeys(data)};
     }
 };

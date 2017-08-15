@@ -177,18 +177,15 @@ module.exports = {
         let transaction = await ctx.app.db.transaction(function(trx) {
             let removeQuery = handleRemoveIdArrs(stepsToRemove, ctx, 'steps', trx);
             return removeQuery.then(function(count) {
-                console.log('count', count);
                 let stepQueries = [];
                 if(stepsToUpdate.length > 0) {
                     stepsToUpdate.sort(updateStepsCmpFn);
                     stepQueries = stepsToUpdate.map(step => {
-                        console.log('step', step);
                         step = _.omit(step, ['oldOrder', 'tags', 'tagsToRemove']);
                         return trx('steps').where('id', step.id).update(humps.decamelizeKeys(step));
                     });
                     stepsToUpdate.forEach(step => {
                         if(step.tagsToRemove && step.tagsToRemove.length > 0) {
-                            console.log('tagsToRemove', step.tagsToRemove);
                             stepQueries.push(trx('step_tags').whereIn('id', step.tagsToRemove).del());
                         }
                         if(step.tags && step.tags.length > 0) {
@@ -203,7 +200,6 @@ module.exports = {
                 }
                 return Promise.all(stepQueries)
                 .then(function(results) {
-                    console.log('stepQueries', results);
                     if(recipe.steps && recipe.steps.length > 0) {
                         let stepTags = [];
                         recipe.steps.forEach(step => {
@@ -218,7 +214,6 @@ module.exports = {
                             }
                         });
                         let sanitizedSteps = recipe.steps.map(step => _.omit(step, ['tags']));
-                        console.log('sanitizedSteps', sanitizedSteps);
                         return trx('steps').insert(humps.decamelizeKeys(sanitizedSteps))
                         .then(function(res) {
                             if(stepTags.length > 0) {
@@ -232,7 +227,6 @@ module.exports = {
                 });
             });
         });
-        console.log('transaction', transaction);
         if(recipeIngredientsToUpdate.length > 0) {
             try {
                 await (() => {
@@ -252,7 +246,6 @@ module.exports = {
                 context: {isUpdate: true}
             };
             recipe = await ctx.app.schemas.recipes.validate(recipe, validationOpts);
-            console.log('here');
             let updateRecipe = _.omit(recipe, ['ingredients', 'seasonings', 'steps', 'tags']);
             updateRecipe.updatedAt = new Date().toISOString();
             queries.push(ctx.app.db('recipes')
@@ -295,6 +288,6 @@ module.exports = {
             ctx.throw(400, new errors.BadRequestError('Need an id with that DELETE, dawg'));
         }
         const data = await ctx.app.db('recipes').where('id', id).returning(['id', 'title']).del();
-        ctx.body = {data: data};
+        ctx.body = {data: humps.camelizeKeys(data)};
     }
 };
