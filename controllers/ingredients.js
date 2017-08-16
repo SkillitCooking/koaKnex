@@ -108,8 +108,15 @@ module.exports = {
         if(!isUUID(id)) {
             ctx.throw(400, new errors.BadRequestError('Need an id with that PUT, dawg'));
         }
-        let {ingredient = {}, composingToRemove = [], tagsToRemove = []} = body;
+        let {ingredient = {}, composingToRemove = [], composingToEdit = [], tagsToRemove = []} = body;
         let queries = [];
+        if(composingToEdit.length > 0) {
+            composingToEdit.forEach(ci => {
+                queries.push(ctx.app.db('composing_ingredients')
+                        .where('id', ci.id)
+                        .update(humps.decamelizeKeys(ci)));
+            });
+        }
         if(!_.isEmpty(ingredient)) {
             let validationOpts = {
                 abortEarly: true,
