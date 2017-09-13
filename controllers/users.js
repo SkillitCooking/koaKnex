@@ -19,7 +19,7 @@ module.exports = {
 
     async balls (ctx) {
         //ctx.throw(400, 'uh oh', {but: 'not really'});
-        console.log('here boose', context.req.body);
+        console.log('here boose', ctx.req.body);
         ctx.body = {message: 'siiiick brah'};
     },
     async post (ctx) {
