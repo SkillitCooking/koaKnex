@@ -9,6 +9,8 @@ const seasonings = require('./seasonings');
 const steps = require('./steps');
 const tags = require('./tags');
 const units = require('./units');
+const deliveryPreferences = require('./deliveryPreferences');
+const mealPlans = require('./mealPlans');
 
 module.exports = function(app) {
     app.schemas = {
@@ -20,6 +22,8 @@ module.exports = function(app) {
         seasonings,
         steps,
         tags,
-        units
+        units,
+        deliveryPreferences,
+        mealPlans
     };
 };
