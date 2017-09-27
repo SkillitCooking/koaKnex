@@ -7,6 +7,7 @@ const knexfile = require('./knexfile');
 
 const ROOT = path.resolve(__dirname, '../');
 const NODE_ENV = _.defaultTo(process.env.NODE_ENV, 'development');
+const dbClient = _.defaultTo(process.env.DB_CLIENT, 'sqlite3');
 
 const isProd = NODE_ENV === 'production';
 const isTest = NODE_ENV === 'test';
@@ -22,7 +23,7 @@ module.exports = {
     },
 
     env: {
-        isDev, isTest, isProd
+        isDev, isTest, isProd, dbClient
     },
 
     secret: _.defaultTo(process.env.SECRET, 'secret'),

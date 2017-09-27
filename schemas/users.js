@@ -36,10 +36,11 @@ const userSchema = yup.object().shape({
     lastName: yup.string()
         .trim(),
     address: yup.object().shape({
-        street: yup.string(),
-        city: yup.string().trim(),
-        state: yup.string().trim(),
-        zip: yup.string().trim()
+        street: yup.string().required(),
+        street2: yup.string(),
+        city: yup.string().required().trim(),
+        state: yup.string().required().trim(),
+        zip: yup.string().required().trim()
     }).noUnknown(),
     age: yup.number().positive(),
     gender: yup.string().uppercase().test({
@@ -61,7 +62,7 @@ const userSchema = yup.object().shape({
     }).when('$isUpdate', (isUpdate, schema) => isUpdate
         ? schema
         : schema.required()
-    ).noUnknown(),
+    ).noUnknown().strict(),
     previousMealPlan: yup.string().test({
         name: 'lastMeal',
         message: '${path} must be uuid',

@@ -2,18 +2,43 @@
 
 const _ = require('lodash');
 const uuid = require('uuid');
+const joinJs = require('join-js').default;
 const bcrypt = require('bcrypt');
 const humps = require('humps');
+const isUUID = require('validator/lib/isUUID');
+const errors = require('../lib/errors');
 
 const {cannotAuthenticate, validateClient} = require('../lib/validation');
 const {ValidationError} = require('../lib/errors');
 const {generateJWTForUser} = require('../lib/auth');
+const {getSelectQueries, userAdminFetchFields} = require('../lib/queries');
+const {PREFIX} = require('../lib/constants');
+const relationsMap = require('../relations-map').adminUsersMap;
+
+function getUserObjForUpdate(user) {
+    //take out delivery preferences
+    //flatten address
+    if(user.address) {
+        user.address_street = user.address.street;
+        user.address_street2 = user.address.street2;
+        user.address_city = user.address.city;
+        user.address_state = user.address_state;
+        user.address_zip = user.address_zip;
+    }
+    return _.omit(user, ['address', 'deliveryPreferences']);
+}
 
 module.exports = {
-
+    //TODO: add in pagination here...
     async get (ctx) {
         console.log('get');
         let users = await ctx.app.db.select().from('users');
+        users = joinJs.map(users, relationsMap, 'userMap', PREFIX.USERS + '_');
+        users = users.map(user => {
+            return _.omitBy(user, prop => {
+                return prop === 'password' || /^address/.test(prop);
+            });
+        });
         ctx.body = {users: users};
     },
 
@@ -22,6 +47,7 @@ module.exports = {
         console.log('here boose', ctx.req.body);
         ctx.body = {message: 'siiiick brah'};
     },
+
     async post (ctx) {
         const {body} = ctx.request;
         //get user from body
@@ -32,19 +58,97 @@ module.exports = {
         };
         //validate user
         user = await ctx.app.schemas.users.validate(user, validationOpts);
-        user.isAdmin = false;
-        //set id
+        //need to convert address
         user.id = uuid();
         //hash password
         user.password = await bcrypt.hash(user.password, 10);
-        //DB insertion + key decamelization
-        //check for existence first...
+        let newUser = _.omit(user, ['address']);
+        newUser.addressStreet = user.address.street;
+        if(user.address.street2) {
+            newUser.addressStreet2 = user.address.street2;
+        }
+        newUser.addressCity = user.address.city;
+        newUser.addressState = user.address.state;
+        newUser.addressZip = user.address.zip;
+        user.isAdmin = false;
+        let deliveryPreferences = user.deliveryPreferences;
         await ctx.app.db('users')
-            .insert(humps.decamelizeKeys(user));
-        //get user a token - can we expect there to be an id field here? I'm not so sure if not added explicitly
-        user = generateJWTForUser(user);
-        //respond
-        ctx.body = {user: _.omit(user, ['password'])};
+            .insert(humps.decamelizeKeys(_.omit(newUser, 'deliveryPreferences')));
+        //set delivery preferences
+        if(deliveryPreferences) {
+            deliveryPreferences.id = uuid();
+            deliveryPreferences.user = user.id;
+            await ctx.app.db('delivery_preferences')
+                .insert(humps.decamelizeKeys(deliveryPreferences));
+        }
+        let retUser = await ctx.app.db('users')
+            .leftJoin('delivery_preferences', 'users.id', 'delivery_preferences.user')
+            .select(...getSelectQueries('users', PREFIX.USERS, userAdminFetchFields.users),
+                ...getSelectQueries('delivery_preferences', PREFIX.DELIVERY_PREFERENCES, userAdminFetchFields.deliveryPreferences))
+            .where('users.id', id);
+        retUser = joinJs.mapOne(retUser, relationsMap, 'userMap', PREFIX.USERS + '_');
+        retUser.address = {
+            street: retUser.address_street,
+            street2: retUser.address_street2,
+            city: retUser.address_city,
+            state: retUser.address_state,
+            zip: retUser.address_zip
+        };
+        retUser = generateJWTForUser(retUser);
+        ctx.body = {user: _.omitBy(retUser, prop => {
+            return prop === 'password' || /^address_/.test(prop);
+        })};
+    },
+
+    async adminPut(ctx) {
+        const {id} = ctx.params;
+        const {body} = ctx.request;
+        if(!isUUID(id)) {
+            ctx.throw(400, new errors.BadReq)
+        }
+        let {user = {}} = body;
+        if(!_.isEmpty(user)) {
+            const validationOpts = {
+                abortEarly: false,
+                context: { isUpdate: true }
+            };
+            user = await ctx.app.schemas.users.validate(user, validationOpts);
+            if(user.deliveryPreferences) {
+                await ctx.app.db('delivery_preferences')
+                    .where('id', user.deliveryPreferences.id)
+                    .update(humps.decamelizeKeys(user.deliveryPreferences));
+            }
+            let updateUser = getUserObjForUpdate(user);
+            updateUser.updatedAt = new Date().toISOString();
+            await ctx.app.db('users').where('id', id)
+                .update(humps.decamelizeKeys(updateUser));
+        }
+        let retUser = await ctx.app.db('users')
+            .leftJoin('delivery_preferences', 'users.id', 'delivery_preferences.user')
+            .select(...getSelectQueries('users', PREFIX.USERS, userAdminFetchFields.users),
+                ...getSelectQueries('delivery_preferences', PREFIX.DELIVERY_PREFERENCES, userAdminFetchFields.deliveryPreferences))
+            .where('users.id', id);
+        retUser = joinJs.mapOne(retUser, relationsMap, 'userMap', PREFIX.USERS + '_');
+        retUser.address = {
+            street: retUser.address_street,
+            street2: retUser.address_street2,
+            city: retUser.address_city,
+            state: retUser.address_state,
+            zip: retUser.address_zip
+        };
+        retUser = generateJWTForUser(retUser);
+        ctx.body = {user: _.omitBy(retUser, prop => {
+            return prop === 'password' || /^address_/.test(prop);
+        })};
+    },
+
+    async del(ctx) {
+        const {id} = ctx.params;
+        if(!isUUID(id)) {
+            ctx.throw(400, new errors.BadRequestError('need an id with that DELETE homes'));
+        }
+        const data = await ctx.app.db('users').where('id', id).returning(['id', 'email', 'username']).del();
+        ctx.body = {data: humps.camelizeKeys(data)};
     },
 
     async addAdmin(ctx) {

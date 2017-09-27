@@ -6,6 +6,7 @@ const tags = require('./tags');
 const units = require('./units');
 const seasonings = require('./seasonings');
 const recipes = require('./recipes');
+const mealPlanEmailTypes = require('./mealPlanEmailTypes');
 
 /**
  * Explore how to use transactions with knex in layered queries that
@@ -19,5 +20,6 @@ module.exports = {
     tags,
     units,
     seasonings,
-    recipes
+    recipes,
+    mealPlanEmailTypes
 };

@@ -24,5 +24,6 @@ module.exports = async (ctx, next) => {
             )
             .where({id: ctx.state.jwtData.sub.id});
     }
+    
     return next();
 };

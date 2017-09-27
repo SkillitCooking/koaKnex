@@ -3,6 +3,8 @@
 const jwt = require('koa-jwt');
 const {jwtSecret} = require('../config');
 
+console.log('jwtSecret', jwtSecret);
+
 module.exports = jwt({
     getToken,
     secret: jwtSecret,
@@ -14,7 +16,6 @@ module.exports = jwt({
 
 function getToken(ctx, opts) {
     const {authorization} = ctx.header;
-    console.log('authorization: ', authorization);
     if(authorization && authorization.split(' ')[0] === 'Bearer') {
         return authorization.split(' ')[1];
     }

@@ -11,9 +11,9 @@ const deliveryPreferencesSchema = yup.object().shape({
             message: '${path} must be uuid',
             test: val => val ? isUUID(val) : true
         }),
-    userId: yup.string()
+    user: yup.string()
         .test({
-            name: 'userId',
+            name: 'user',
             message: '${path} must be uuid',
             test: val => val ? isUUID(val) : true
         }),
