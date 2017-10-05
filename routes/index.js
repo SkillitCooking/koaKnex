@@ -11,6 +11,7 @@ const tags = require('./tags');
 const seasonings = require('./seasonings');
 const recipes = require('./recipes');
 const mealPlanEmailTypes = require('./mealPlanEmailTypes');
+const mealPlans = require('./mealPlans');
 
 api.use(users);
 api.use(ingredients);
@@ -19,6 +20,7 @@ api.use(tags);
 api.use(seasonings);
 api.use(recipes);
 api.use(mealPlanEmailTypes);
+api.use(mealPlans);
 
 router.use('/api', api.routes());
 

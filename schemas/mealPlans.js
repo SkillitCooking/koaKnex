@@ -11,9 +11,9 @@ const mealPlansSchema = yup.object().shape({
             message: '${path} must be uuid',
             test: val => val ? isUUID(val) : true
         }),
-    userId: yup.string()
+    user: yup.string()
         .test({
-            name: 'id',
+            name: 'user',
             message: '${path} must be uuid',
             test: val => val ? isUUID(val) : true
         }),
@@ -21,6 +21,14 @@ const mealPlansSchema = yup.object().shape({
         .when('$isUpdate', (isUpdate, schema) => isUpdate
             ? schema
             : schema.required()
+    ),
+    recipes: yup.array().of(yup.string().test({
+        name: 'recipes',
+        message: '${path} must be uuid',
+        test: val => isUUID(val)
+    })).when('$isUpdate', (isUpdate, schema) => isUpdate
+        ? schema.ensure()
+        : schema.min(1)
     ),
     title: yup.string().trim().max(50),
     overview: yup.string().trim()

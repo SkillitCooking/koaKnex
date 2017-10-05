@@ -10,6 +10,7 @@ exports.up = function(knex) {
             table.boolean('has_sent').defaultTo(false);
             table.dateTime('date_sent');
             table.string('email_type').references('meal_plan_email_types.id').notNullable().onUpdate('CASCADE');
+            table.timestamps(true, true);
         })
 };
 

@@ -177,7 +177,7 @@ module.exports = {
                 ...getSelectQueries('composing_ingredients', PREFIX.COMPOSING_INGREDIENTS, ingredientsFetchFields.composingIngredients),
                 ...getSelectQueries('child_ingredients', PREFIX.CHILD_INGREDIENTS, ingredientsFetchFields.childIngredients))
             .where('ingredients.id', id);
-            retIngredient = joinJs.mapOne(retIngredient, relationsMap, 'ingredientMap', PREFIX.INGREDIENTS + '_');
+        retIngredient = joinJs.mapOne(retIngredient, relationsMap, 'ingredientMap', PREFIX.INGREDIENTS + '_');
         ctx.body = {data: retIngredient};
     },
 

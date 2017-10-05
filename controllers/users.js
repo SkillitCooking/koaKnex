@@ -31,7 +31,6 @@ function getUserObjForUpdate(user) {
 module.exports = {
     //TODO: add in pagination here...
     async get (ctx) {
-        console.log('get');
         let users = await ctx.app.db.select().from('users');
         users = joinJs.map(users, relationsMap, 'userMap', PREFIX.USERS + '_');
         users = users.map(user => {
@@ -40,6 +39,18 @@ module.exports = {
             });
         });
         ctx.body = {users: users};
+    },
+
+    async getOne(ctx) {
+        const {id} = ctx.params;
+        if(!isUUID(id)) {
+            ctx.throw(400, new errors.BadRequestError);
+        }
+        let user = await ctx.app.db('users').where('id', id);
+        user = joinJs.mapOne(user, relationsMap, 'userMap', PREFIX.USERS + '_');
+        user = _.omitBy(user, prop => {
+            return prop === 'password' || /^address/.test(prop);
+        });
     },
 
     async balls (ctx) {
@@ -104,7 +115,7 @@ module.exports = {
         const {id} = ctx.params;
         const {body} = ctx.request;
         if(!isUUID(id)) {
-            ctx.throw(400, new errors.BadReq)
+            ctx.throw(400, new errors.BadRequestError);
         }
         let {user = {}} = body;
         if(!_.isEmpty(user)) {
