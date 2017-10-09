@@ -45,7 +45,7 @@ const userSchema = yup.object().shape({
     age: yup.number().positive(),
     gender: yup.string().uppercase().test({
         name: 'gender',
-        message: '${path} must be uuid',
+        message: '${path} must be gender value',
         test: value => value ? isValidGender(value) : true
     }),
     isDueForMealPlan: yup.boolean().default(false),

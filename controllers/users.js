@@ -69,6 +69,7 @@ module.exports = {
         };
         //validate user
         user = await ctx.app.schemas.users.validate(user, validationOpts);
+        console.log('here');
         //need to convert address
         user.id = uuid();
         //hash password
@@ -96,7 +97,7 @@ module.exports = {
             .leftJoin('delivery_preferences', 'users.id', 'delivery_preferences.user')
             .select(...getSelectQueries('users', PREFIX.USERS, userAdminFetchFields.users),
                 ...getSelectQueries('delivery_preferences', PREFIX.DELIVERY_PREFERENCES, userAdminFetchFields.deliveryPreferences))
-            .where('users.id', id);
+            .where('users.id', user.id);
         retUser = joinJs.mapOne(retUser, relationsMap, 'userMap', PREFIX.USERS + '_');
         retUser.address = {
             street: retUser.address_street,

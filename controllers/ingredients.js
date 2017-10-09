@@ -49,7 +49,7 @@ module.exports = {
         };
         //consolidate the two DB calls below?
         await ctx.app.db('ingredient_tags').insert(categoryRelation);
-        if(ingredient.tags) {
+        if(ingredient.tags && ingredient.tags.length > 0) {
             //assuming all have type 'default' for now...
             let tags = ingredient.tags.map(tagId => ({
                 id: uuid(),
@@ -71,7 +71,7 @@ module.exports = {
                 ...getSelectQueries('units', PREFIX.UNITS, ingredientsFetchFields.units),
                 ...getSelectQueries('composing_ingredients', PREFIX.COMPOSING_INGREDIENTS, ingredientsFetchFields.composingIngredients),
                 ...getSelectQueries('child_ingredients', PREFIX.CHILD_INGREDIENTS, ingredientsFetchFields.childIngredients))
-            .where('ingredients.id', ingredient.id);
+            .whereIn('ingredients.id', [ingredient.id]);
         retIngredient = joinJs.mapOne(retIngredient, relationsMap, 'ingredientMap', PREFIX.INGREDIENTS + '_');
         ctx.body = {data: retIngredient};
     },

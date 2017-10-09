@@ -21,7 +21,7 @@ const options = {
     seeds: {
         directory: path.join(ROOT, 'seeds')
     },
-    useNullAsDefault: !DB_CLIENT && DB_CLIENT === 'sqlite3'
+    useNullAsDefault: !DB_CLIENT || DB_CLIENT === 'sqlite3'
 };
 
 if (DB_CLIENT && DB_CLIENT !== 'sqlite3') {
