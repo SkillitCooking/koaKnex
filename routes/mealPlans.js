@@ -9,6 +9,7 @@ const auth = require('../middleware/auth-required-middleware');
 const {AUTHORIZATION} = require('../lib/constants');
 
 router.post('/mealPlans', auth({authorization: AUTHORIZATION.PRIVATE}), ctrl.post);
+router.get('/mealPlans', auth({authorization: AUTHORIZATION.PRIVATE}), ctrl.get);
 router.get('/mealPlans/:id', auth({authorization: AUTHORIZATION.PRIVATE}), ctrl.getOne);
 router.get('/mealPlans/byUser/:id', auth({authorization: AUTHORIZATION.PRIVATE}), ctrl.mealPlansForUser);
 router.put('/mealPlans/:id', auth({authorization: AUTHORIZATION.PRIVATE}), ctrl.put);

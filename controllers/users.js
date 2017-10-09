@@ -31,7 +31,7 @@ function getUserObjForUpdate(user) {
 module.exports = {
     //TODO: add in pagination here...
     async get (ctx) {
-        let users = await ctx.app.db.select().from('users');
+        let users = await ctx.app.db('users').select('*');
         users = joinJs.map(users, relationsMap, 'userMap', PREFIX.USERS + '_');
         users = users.map(user => {
             return _.omitBy(user, prop => {

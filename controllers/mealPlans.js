@@ -41,9 +41,16 @@ module.exports = {
         };
         await ctx.app.db('meal_plan_emails').insert(humps.decamelizeKeys(mealPlanEmail));
         //return mealPlan
-        let retMealPlan = await getMealPlanSelectQuery(ctx.app.db('meal_plans'));
+        let retMealPlan = await getMealPlanSelectQuery(ctx.app.db('meal_plans')).whereIn('meal_plans.id', [mealPlan.id]);
         retMealPlan = joinJs.mapOne(retMealPlan, relationsMap, 'mealPlanMap', PREFIX.MEAL_PLANS + '_');
         ctx.body = {data: retMealPlan};
+    },
+
+    async get(ctx) {
+        let query = getMealPlanSelectQuery(ctx.app.db('meal_plans'));
+        let mealPlans = await query;
+        mealPlans = joinJs.map(mealPlans, relationsMap, 'mealPlanMap', PREFIX.MEAL_PLANS  + '_');
+        ctx.body = {data: mealPlans};
     },
 
     async getOne(ctx) {
@@ -53,7 +60,7 @@ module.exports = {
             ctx.throw(400, new errors.BadRequestError('Need an id to get in the GET/:id club, dood'));
         }
         //fetch, map, return
-        let query = getMealPlanSelectQuery(ctx.app.db('meal_plans')).where('id', id);
+        let query = getMealPlanSelectQuery(ctx.app.db('meal_plans')).whereIn('meal_plans.id', [id]);
         let mealPlan = await query;
         mealPlan = joinJs.mapOne(mealPlan, relationsMap, 'mealPlanMap', PREFIX.MEAL_PLANS + '_');
         ctx.body = {data: mealPlan};
@@ -87,9 +94,9 @@ module.exports = {
         if(!_.isEmpty(mealPlan)) {
             let validationOpts = {
                 abortEarly: false,
-                isUpdate: true
+                context: {isUpdate: true}
             }
-            mealPlan = ctx.app.schemas.mealPlans.validate(mealPlan, validationOpts);
+            mealPlan = await ctx.app.schemas.mealPlans.validate(mealPlan, validationOpts);
             let updateMealPlan = _.omit(mealPlan, ['recipes']);
             updateMealPlan.updatedAt = new Date().toISOString();
             queries.push(ctx.app.db('meal_plans')
@@ -99,7 +106,7 @@ module.exports = {
                 let recipeMealPlans = mealPlan.recipes.map(recipeId => ({
                     id: uuid(),
                     recipe: recipeId,
-                    mealPlan: id
+                    meal_plan: id
                 }));
                 queries.push(ctx.app.db('recipe_meal_plans').insert(recipeMealPlans));
             }
@@ -109,7 +116,7 @@ module.exports = {
         }
         await Promise.all(queries);
         //fetch, map, return mealPlan
-        let retMealPlan = getMealPlanSelectQuery(ctx.app.db('meal_plans')).where('id', id);
+        let retMealPlan = await getMealPlanSelectQuery(ctx.app.db('meal_plans')).whereIn('meal_plans.id', [id]);
         retMealPlan = joinJs.mapOne(retMealPlan, relationsMap, 'mealPlanMap', PREFIX.MEAL_PLANS + '_');
         ctx.body = {data: retMealPlan};
     },
@@ -121,7 +128,7 @@ module.exports = {
             ctx.throw(400, new errors.BadRequestError('Dude, DELETE-ing requires an id'));
         }
         const data = await ctx.app.db('meal_plans').where('id', id).returning(['id', 'title']).del();
-        ctx.body({data: humps.camelizeKeys(data)});
+        ctx.body = {data: humps.camelizeKeys(data)};
         //delete, return
     }
 };

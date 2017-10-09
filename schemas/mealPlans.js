@@ -22,14 +22,14 @@ const mealPlansSchema = yup.object().shape({
             ? schema
             : schema.required()
     ),
-    recipes: yup.array().of(yup.string().test({
+    recipes: yup.array().when('$isUpdate', (isUpdate, schema) => isUpdate
+        ? schema.ensure()
+        : schema.min(1)
+    ).of(yup.string().test({
         name: 'recipes',
         message: '${path} must be uuid',
         test: val => isUUID(val)
-    })).when('$isUpdate', (isUpdate, schema) => isUpdate
-        ? schema.ensure()
-        : schema.min(1)
-    ),
+    })),
     title: yup.string().trim().max(50),
     overview: yup.string().trim()
 })
