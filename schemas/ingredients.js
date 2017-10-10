@@ -30,6 +30,11 @@ const ingredientSchema = yup.object().shape({
         ? schema
         : schema.default(1)
     ),
+    totalSize: yup.number().when('$isUpdate', (isUpdate, schema) => isUpdate
+        ? schema
+        : schema.default(1)
+    ),
+    estUnitPrice: yup.number(),
     units: yup.string()
         .test({
             name: 'units',

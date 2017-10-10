@@ -51,6 +51,7 @@ module.exports = {
         user = _.omitBy(user, prop => {
             return prop === 'password' || /^address/.test(prop);
         });
+        ctx.body = {user: user};
     },
 
     async balls (ctx) {

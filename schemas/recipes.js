@@ -19,6 +19,14 @@ const recipeSchema = yup.object().shape({
         ? schema
         : schema.required()
     ),
+    activeTime: yup.number().integer().when('$isUpdate', (isUpdate, schema) => isUpdate
+        ? schema
+        : schema.required()
+    ),
+    totalTime: yup.number().integer().when('$isUpdate', (isUpdate, schema) => isUpdate
+        ? schema
+        : schema.required()
+    ),
     mainImageUrl: yup.string().url().trim().when('$isUpdate', (isUpdate, schema) => isUpdate
         ? schema
         : schema.required()
