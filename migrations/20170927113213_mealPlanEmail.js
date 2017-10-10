@@ -9,7 +9,7 @@ exports.up = function(knex) {
             table.uuid('meal_plan').notNullable().references('meal_plans.id').onDelete('CASCADE');
             table.boolean('has_sent').defaultTo(false);
             table.dateTime('date_sent');
-            table.string('email_type').references('meal_plan_email_types.id').notNullable().onUpdate('CASCADE');
+            table.string('email_type').references('meal_plan_email_types.type').notNullable().onUpdate('CASCADE');
             table.timestamps(true, true);
         })
 };
