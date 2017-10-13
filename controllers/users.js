@@ -28,17 +28,28 @@ function getUserObjForUpdate(user) {
     return _.omit(user, ['address', 'deliveryPreferences']);
 }
 
+function assignAddressObject(user) {
+    user.address = {
+        street: user.address_street,
+        street2: user.address_street2,
+        city: user.address_city,
+        state: user.address_state,
+        zip: user.address_zip
+    };
+}
+
 module.exports = {
     //TODO: add in pagination here...
     async get (ctx) {
         let users = await ctx.app.db('users')
-        .leftJoin('delivery_preferences', 'users.id', 'delivery_preferences.user')
-        .select(...getSelectQueries('users', PREFIX.USERS, userAdminFetchFields.users),
-            ...getSelectQueries('delivery_preferences', PREFIX.DELIVERY_PREFERENCES, userAdminFetchFields.deliveryPreferences));
+            .leftJoin('delivery_preferences', 'users.id', 'delivery_preferences.user')
+            .select(...getSelectQueries('users', PREFIX.USERS, userAdminFetchFields.users),
+                ...getSelectQueries('delivery_preferences', PREFIX.DELIVERY_PREFERENCES, userAdminFetchFields.deliveryPreferences));
         users = joinJs.map(users, relationsMap, 'userMap', PREFIX.USERS + '_');
         users = users.map(user => {
-            return _.omitBy(user, prop => {
-                return prop === 'password' || /^address/.test(prop);
+            assignAddressObject(user);
+            return _.omitBy(user, (val, prop) => {
+                return prop === 'password' || /^address_/.test(prop);
             });
         });
         ctx.body = {users: users};
@@ -50,13 +61,14 @@ module.exports = {
             ctx.throw(400, new errors.BadRequestError);
         }
         let user = await ctx.app.db('users')
-        .leftJoin('delivery_preferences', 'users.id', 'delivery_preferences.user')
-        .select(...getSelectQueries('users', PREFIX.USERS, userAdminFetchFields.users),
-            ...getSelectQueries('delivery_preferences', PREFIX.DELIVERY_PREFERENCES, userAdminFetchFields.deliveryPreferences))
-        .where('users.id', id);
+            .leftJoin('delivery_preferences', 'users.id', 'delivery_preferences.user')
+            .select(...getSelectQueries('users', PREFIX.USERS, userAdminFetchFields.users),
+                ...getSelectQueries('delivery_preferences', PREFIX.DELIVERY_PREFERENCES, userAdminFetchFields.deliveryPreferences))
+            .where('users.id', id);
         user = joinJs.mapOne(user, relationsMap, 'userMap', PREFIX.USERS + '_');
-        user = _.omitBy(user, prop => {
-            return prop === 'password' || /^address/.test(prop);
+        assignAddressObject(user);
+        user = _.omitBy(user, (val, prop) => {
+            return prop === 'password' || /^address_/.test(prop);
         });
         ctx.body = {user: user};
     },
@@ -106,15 +118,9 @@ module.exports = {
                 ...getSelectQueries('delivery_preferences', PREFIX.DELIVERY_PREFERENCES, userAdminFetchFields.deliveryPreferences))
             .where('users.id', user.id);
         retUser = joinJs.mapOne(retUser, relationsMap, 'userMap', PREFIX.USERS + '_');
-        retUser.address = {
-            street: retUser.address_street,
-            street2: retUser.address_street2,
-            city: retUser.address_city,
-            state: retUser.address_state,
-            zip: retUser.address_zip
-        };
+        assignAddressObject(retUser);
         retUser = generateJWTForUser(retUser);
-        ctx.body = {user: _.omitBy(retUser, prop => {
+        ctx.body = {user: _.omitBy(retUser, (val, prop) => {
             return prop === 'password' || /^address_/.test(prop);
         })};
     },
@@ -151,15 +157,9 @@ module.exports = {
                 ...getSelectQueries('delivery_preferences', PREFIX.DELIVERY_PREFERENCES, userAdminFetchFields.deliveryPreferences))
             .where('users.id', id);
         retUser = joinJs.mapOne(retUser, relationsMap, 'userMap', PREFIX.USERS + '_');
-        retUser.address = {
-            street: retUser.address_street,
-            street2: retUser.address_street2,
-            city: retUser.address_city,
-            state: retUser.address_state,
-            zip: retUser.address_zip
-        };
+        assignAddressObject(retUser);
         retUser = generateJWTForUser(retUser);
-        ctx.body = {user: _.omitBy(retUser, prop => {
+        ctx.body = {user: _.omitBy(retUser, (val, prop) => {
             return prop === 'password' || /^address_/.test(prop);
         })};
     },
