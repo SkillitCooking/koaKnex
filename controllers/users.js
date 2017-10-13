@@ -31,6 +31,10 @@ function getUserObjForUpdate(user) {
 module.exports = {
     //TODO: add in pagination here...
     async get (ctx) {
+        let users = await ctx.app.db('users')
+        .leftJoin('delivery_preferences', 'users.id', 'delivery_preferences.user')
+        .select(...getSelectQueries('users', PREFIX.USERS, userAdminFetchFields.users),
+            ...getSelectQueries('delivery_preferences', PREFIX.DELIVERY_PREFERENCES, userAdminFetchFields.deliveryPreferences));
         let users = await ctx.app.db('users').select('*');
         users = joinJs.map(users, relationsMap, 'userMap', PREFIX.USERS + '_');
         users = users.map(user => {
@@ -46,7 +50,11 @@ module.exports = {
         if(!isUUID(id)) {
             ctx.throw(400, new errors.BadRequestError);
         }
-        let user = await ctx.app.db('users').where('id', id);
+        let user = await ctx.app.db('users')
+        .leftJoin('delivery_preferences', 'users.id', 'delivery_preferences.user')
+        .select(...getSelectQueries('users', PREFIX.USERS, userAdminFetchFields.users),
+            ...getSelectQueries('delivery_preferences', PREFIX.DELIVERY_PREFERENCES, userAdminFetchFields.deliveryPreferences))
+        .where('users.id', id);
         user = joinJs.mapOne(user, relationsMap, 'userMap', PREFIX.USERS + '_');
         user = _.omitBy(user, prop => {
             return prop === 'password' || /^address/.test(prop);
@@ -70,7 +78,6 @@ module.exports = {
         };
         //validate user
         user = await ctx.app.schemas.users.validate(user, validationOpts);
-        console.log('here');
         //need to convert address
         user.id = uuid();
         //hash password
@@ -130,6 +137,9 @@ module.exports = {
                 await ctx.app.db('delivery_preferences')
                     .where('id', user.deliveryPreferences.id)
                     .update(humps.decamelizeKeys(user.deliveryPreferences));
+            }
+            if(user.password) {
+                user.password = await bcrypt.hash(user.password, 10);
             }
             let updateUser = getUserObjForUpdate(user);
             updateUser.updatedAt = new Date().toISOString();

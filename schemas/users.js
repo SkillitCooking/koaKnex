@@ -37,7 +37,7 @@ const userSchema = yup.object().shape({
         .trim(),
     address: yup.object().shape({
         street: yup.string().required(),
-        street2: yup.string(),
+        street2: yup.string().ensure(),
         city: yup.string().required().trim(),
         state: yup.string().required().trim(),
         zip: yup.string().required().trim()
