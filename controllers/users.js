@@ -35,7 +35,6 @@ module.exports = {
         .leftJoin('delivery_preferences', 'users.id', 'delivery_preferences.user')
         .select(...getSelectQueries('users', PREFIX.USERS, userAdminFetchFields.users),
             ...getSelectQueries('delivery_preferences', PREFIX.DELIVERY_PREFERENCES, userAdminFetchFields.deliveryPreferences));
-        let users = await ctx.app.db('users').select('*');
         users = joinJs.map(users, relationsMap, 'userMap', PREFIX.USERS + '_');
         users = users.map(user => {
             return _.omitBy(user, prop => {
