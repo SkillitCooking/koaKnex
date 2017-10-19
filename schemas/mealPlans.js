@@ -22,6 +22,11 @@ const mealPlansSchema = yup.object().shape({
             ? schema
             : schema.required()
     ),
+    deliveryTimezone: yup.string()
+        .when('$isUpdate', (isUpdate, schema) => isUpdate
+        ? schema
+        : schema.required()
+    ),
     recipes: yup.array().when('$isUpdate', (isUpdate, schema) => isUpdate
         ? schema.ensure()
         : schema.min(1)
