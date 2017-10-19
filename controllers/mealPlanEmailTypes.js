@@ -9,10 +9,10 @@ module.exports = {
         let query = ctx.app.db('meal_plan_email_types').insert(Object.keys(MEAL_PLAN_EMAIL_TYPES));
         let safeQuery;
         if(env.dbClient === 'sqlite3') {
-            safeQuery = knex.raw('? ON CONFLICT IGNORE', [query]);
+            safeQuery = ctx.app.db.raw('? ON CONFLICT IGNORE', [query]);
         } else {
             //assumes pg
-            safeQuery = knex.raw('? ON CONFLICT DO NOTHING', [query]);
+            safeQuery = ctx.app.db.raw('? ON CONFLICT DO NOTHING', [query]);
         }
         await safeQuery;
         ctx.body = {message: 'Success Everyone!'};
