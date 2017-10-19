@@ -6,7 +6,9 @@ const env = require('../config').env;
 module.exports = {
     async initialize(ctx) {
         //do upsert of meal plan email types
-        let query = ctx.app.db('meal_plan_email_types').insert(Object.keys(MEAL_PLAN_EMAIL_TYPES));
+        let query = ctx.app.db('meal_plan_email_types').insert(Object.keys(MEAL_PLAN_EMAIL_TYPES).map(t => ({
+            type: t
+        })));
         let safeQuery;
         if(env.dbClient === 'sqlite3') {
             safeQuery = ctx.app.db.raw('? ON CONFLICT IGNORE', [query]);
