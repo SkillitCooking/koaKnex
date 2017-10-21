@@ -2,7 +2,7 @@
 exports.up = function(knex) {
   return knex.schema
     .alterTable('meal_plans', function(table) {
-        table.string('delivery_timezone').notNullable();;
+        table.string('delivery_timezone').notNullable();
     })
 };
 
