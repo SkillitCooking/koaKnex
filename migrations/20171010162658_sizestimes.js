@@ -16,7 +16,7 @@ exports.down = function(knex) {
   knex.schema
     .alterTable('ingredients', function(table) {
         table.dropColumns(
-            'est_unit_size',
+            'est_unit_price',
             'total_size'
         );
     })
