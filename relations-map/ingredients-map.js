@@ -14,7 +14,9 @@ const ingredientFields = [
     'name_plural',
     'description',
     'is_composite',
-    'serving_size'
+    'serving_size',
+    'est_unit_price',
+    'total_size'
 ];
 
 const childIngredientFields = [

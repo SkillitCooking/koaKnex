@@ -6,7 +6,8 @@ const {propWithPrefix} = require('../lib/helpers');
 const mealPlanFields = [
     'id',
     'user',
-    'deliveryTime',
+    'delivery_time',
+    'delivery_timezone',
     'title',
     'overview'
 ];
@@ -15,7 +16,9 @@ const recipeFields = [
     'id',
     'title',
     'description',
-    'main_image_url'
+    'main_image_url',
+    'total_time',
+    'active_time'
 ];
 
 const stepFields = [
@@ -35,7 +38,9 @@ const ingredientFields = [
     'name_plural',
     'description',
     'is_composite',
-    'serving_size'
+    'serving_size',
+    'est_unit_size',
+    'total_size'
 ];
 
 const unitsFields = [
