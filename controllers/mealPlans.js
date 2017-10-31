@@ -37,7 +37,8 @@ module.exports = {
         let mealPlanEmail = {
             id: uuid(),
             mealPlan: mealPlan.id,
-            emailType: MEAL_PLAN_EMAIL_TYPES.DELIVERY_EMAIL
+            emailType: MEAL_PLAN_EMAIL_TYPES.DELIVERY_EMAIL,
+            dateToSend: mealPlan.deliveryTime
         };
         await ctx.app.db('meal_plan_emails').insert(humps.decamelizeKeys(mealPlanEmail));
         //return mealPlan
@@ -109,6 +110,14 @@ module.exports = {
                     meal_plan: id
                 }));
                 queries.push(ctx.app.db('recipe_meal_plans').insert(recipeMealPlans));
+            }
+            if(mealPlan.deliveryTime) {
+                //then need to update mealPlanEmail
+                //TODO: will need to make below query more sophisticated
+                // when have more than one type of mealPlanEmail to send out
+                queries.push(ctx.app.db('meal_plan_emails').where('meal_plan', id).update({
+                    date_to_send: mealPlan.deliveryTime
+                }));
             }
         }
         if(recipesToRemove.length > 0) {
