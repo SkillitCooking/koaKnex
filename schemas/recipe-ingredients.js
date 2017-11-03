@@ -32,10 +32,10 @@ const recipeIngredientSchema = yup.object().shape({
         : schema.default(1)
     )
 })
-.noUnknown()
-.when('$isUpdate', (isUpdate, schema) => isUpdate
-    ? schema
-    : schema.concat(timeStampSchema)
-);
+    .noUnknown()
+    .when('$isUpdate', (isUpdate, schema) => isUpdate
+        ? schema
+        : schema.concat(timeStampSchema)
+    );
 
 module.exports = recipeIngredientSchema;

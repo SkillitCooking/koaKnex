@@ -38,7 +38,7 @@ exports.up = function(knex) {
             table.string('gender');
             table.boolean('is_due_for_meal_plan').defaultTo(false);
             table.uuid('previous_meal_plan').references('meal_plans.id');
-        })
+        });
 };
 
 exports.down = function(knex) {

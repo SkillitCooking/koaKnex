@@ -1,9 +1,9 @@
 
 exports.up = function(knex) {
-  return knex.schema
-    .alterTable('meal_plan_emails', function(table) {
-        table.dateTime('date_to_send');
-    })
+    return knex.schema
+        .alterTable('meal_plan_emails', function(table) {
+            table.dateTime('date_to_send');
+        });
 };
 
 exports.down = function(knex) {

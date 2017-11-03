@@ -61,10 +61,10 @@ const ingredientSchema = yup.object().shape({
         }
     }))
 })
-.noUnknown()
-.when('$isUpdate', (isUpdate, schema) => isUpdate
-    ? schema
-    : schema.concat(timeStampSchema)
-);
+    .noUnknown()
+    .when('$isUpdate', (isUpdate, schema) => isUpdate
+        ? schema
+        : schema.concat(timeStampSchema)
+    );
 
 module.exports = ingredientSchema;

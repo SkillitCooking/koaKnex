@@ -25,10 +25,10 @@ const seasoningSchema = yup.object().shape({
         test: val => isUUID(val)
     }))
 })
-.noUnknown()
-.when('$isUpdate', (isUpdate, schema) => isUpdate
-    ? schema
-    : schema.concat(timeStampSchema)
-);
+    .noUnknown()
+    .when('$isUpdate', (isUpdate, schema) => isUpdate
+        ? schema
+        : schema.concat(timeStampSchema)
+    );
 
 module.exports = seasoningSchema;

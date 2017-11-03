@@ -25,7 +25,7 @@ const ingredientTagSchema = yup.object().shape({
         }),
     type: yup.string().uppercase().trim()
 })
-.noUnknown()
-.concat(timeStampSchema);
+    .noUnknown()
+    .concat(timeStampSchema);
 
 module.exports = ingredientTagSchema;

@@ -21,10 +21,10 @@ const unitSchema = yup.object().shape({
     ),
     abbreviation: yup.string().lowercase().trim()
 })
-.noUnknown()
-.when('$isUpdate', (isUpdate, schema) => isUpdate
-    ? schema
-    : schema.concat(timeStampSchema)
-);
+    .noUnknown()
+    .when('$isUpdate', (isUpdate, schema) => isUpdate
+        ? schema
+        : schema.concat(timeStampSchema)
+    );
 
 module.exports = unitSchema;

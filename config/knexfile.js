@@ -28,7 +28,7 @@ if (DB_CLIENT && DB_CLIENT !== 'sqlite3') {
     options.pool = {
         min: 2,
         max: 10
-    }
+    };
 }
 
 module.exports = {

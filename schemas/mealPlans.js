@@ -21,12 +21,12 @@ const mealPlansSchema = yup.object().shape({
         .when('$isUpdate', (isUpdate, schema) => isUpdate
             ? schema
             : schema.required()
-    ),
+        ),
     deliveryTimezone: yup.string()
         .when('$isUpdate', (isUpdate, schema) => isUpdate
-        ? schema
-        : schema.required()
-    ),
+            ? schema
+            : schema.required()
+        ),
     recipes: yup.array().when('$isUpdate', (isUpdate, schema) => isUpdate
         ? schema.ensure()
         : schema.min(1)
@@ -38,10 +38,10 @@ const mealPlansSchema = yup.object().shape({
     title: yup.string().trim().max(50),
     overview: yup.string().trim()
 })
-.noUnknown()
-.when('$isUpdate', (isUpdate, schema) => isUpdate
-    ? schema
-    : schema.concat(timeStampSchema)
-);
+    .noUnknown()
+    .when('$isUpdate', (isUpdate, schema) => isUpdate
+        ? schema
+        : schema.concat(timeStampSchema)
+    );
 
 module.exports = mealPlansSchema;

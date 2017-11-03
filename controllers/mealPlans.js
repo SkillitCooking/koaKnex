@@ -96,7 +96,7 @@ module.exports = {
             let validationOpts = {
                 abortEarly: false,
                 context: {isUpdate: true}
-            }
+            };
             mealPlan = await ctx.app.schemas.mealPlans.validate(mealPlan, validationOpts);
             let updateMealPlan = _.omit(mealPlan, ['recipes']);
             updateMealPlan.updatedAt = new Date().toISOString();

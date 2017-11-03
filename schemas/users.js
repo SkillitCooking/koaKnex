@@ -22,7 +22,7 @@ const userSchema = yup.object().shape({
         .when('$isUpdate', (isUpdate, schema) => isUpdate
             ? schema
             : schema.required()
-    ),
+        ),
     email: yup.string()
         .email()
         .lowercase()
@@ -30,7 +30,7 @@ const userSchema = yup.object().shape({
         .when('$isUpdate', (isUpdate, schema) => isUpdate
             ? schema
             : schema.required()
-    ),
+        ),
     firstName: yup.string()
         .trim(),
     lastName: yup.string()
@@ -75,10 +75,10 @@ const userSchema = yup.object().shape({
             then: yup.string().required().min(8).max(30)
         })
 })
-.noUnknown()
-.when('$isUpdate', (isUpdate, schema) => isUpdate
-    ? schema
-    : schema.concat(timeStampSchema)
-);
+    .noUnknown()
+    .when('$isUpdate', (isUpdate, schema) => isUpdate
+        ? schema
+        : schema.concat(timeStampSchema)
+    );
 
 module.exports = userSchema;

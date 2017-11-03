@@ -66,7 +66,7 @@ const recipeSchema = yup.object().shape({
         test: val => isUUID(val)
     }))
 })
-.noUnknown()
-.concat(timeStampSchema);
+    .noUnknown()
+    .concat(timeStampSchema);
 
 module.exports = recipeSchema;
