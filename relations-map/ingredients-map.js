@@ -16,7 +16,7 @@ const ingredientFields = [
     'description',
     'is_composite',
     'serving_size',
-    'est_unit_price',
+    'est_total_price',
     'total_size'
 ];
 
