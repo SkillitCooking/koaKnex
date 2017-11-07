@@ -22,9 +22,7 @@ module.exports = {
             query.whereIn('recipes.id', ids);
         }
         let recipes = await query;
-        console.log('here');
         recipes = joinJs.map(recipes, relationsMap, 'recipesMap', PREFIX.RECIPES + '_');
-        console.log('there');
         ctx.body = {data: recipes};
     },
 
