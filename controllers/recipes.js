@@ -22,7 +22,9 @@ module.exports = {
             query.whereIn('recipes.id', ids);
         }
         let recipes = await query;
+        console.log('here');
         recipes = joinJs.map(recipes, relationsMap, 'recipesMap', PREFIX.RECIPES + '_');
+        console.log('there');
         ctx.body = {data: recipes};
     },
 
@@ -144,32 +146,32 @@ module.exports = {
                     });
                 }
                 return Promise.all(stepQueries)
-                .then(function(results) {
-                    if(recipe.steps && recipe.steps.length > 0) {
-                        let stepTags = [];
-                        recipe.steps.forEach(step => {
-                            step.id = uuid();
-                            step.recipe = id;
-                            if(step.tags && step.tags.length > 0) {
-                                stepTags.push(...step.tags.map(tag => ({
-                                    id: uuid(),
-                                    step: step.id,
-                                    tag: tag
-                                })));
-                            }
-                        });
-                        let sanitizedSteps = recipe.steps.map(step => _.omit(step, ['tags']));
-                        return trx('steps').insert(humps.decamelizeKeys(sanitizedSteps))
-                        .then(function(res) {
-                            if(stepTags.length > 0) {
-                                return trx('step_tags').insert(stepTags);
-                            } else {
-                                return Promise.resolve(res);
-                            }
-                        });
-                    }
-                    return Promise.resolve(results);
-                });
+                    .then(function(results) {
+                        if(recipe.steps && recipe.steps.length > 0) {
+                            let stepTags = [];
+                            recipe.steps.forEach(step => {
+                                step.id = uuid();
+                                step.recipe = id;
+                                if(step.tags && step.tags.length > 0) {
+                                    stepTags.push(...step.tags.map(tag => ({
+                                        id: uuid(),
+                                        step: step.id,
+                                        tag: tag
+                                    })));
+                                }
+                            });
+                            let sanitizedSteps = recipe.steps.map(step => _.omit(step, ['tags']));
+                            return trx('steps').insert(humps.decamelizeKeys(sanitizedSteps))
+                                .then(function(res) {
+                                    if(stepTags.length > 0) {
+                                        return trx('step_tags').insert(stepTags);
+                                    } else {
+                                        return Promise.resolve(res);
+                                    }
+                                });
+                        }
+                        return Promise.resolve(results);
+                    });
             });
         });
         if(recipeIngredientsToUpdate.length > 0) {

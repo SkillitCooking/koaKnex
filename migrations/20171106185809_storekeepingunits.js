@@ -10,7 +10,7 @@ exports.up = function(knex) {
 
 exports.down = function(knex) {
     return knex.schema
-        .alterTable('products', function(table) {
+        .alterTable('ingredients', function(table) {
             table.unique('name_singular');
             table.dropColumns('store_keeping_name');
         });

@@ -13,4 +13,4 @@ router.post('/recipes', auth({authorization: AUTHORIZATION.PRIVATE}), ctrl.post)
 router.del('/recipes/:id', auth({authorization: AUTHORIZATION.PRIVATE}), ctrl.del);
 router.put('/recipes/:id', auth({authorization: AUTHORIZATION.PRIVATE}), ctrl.put);
 
-module.exports = router.routes()
+module.exports = router.routes();
