@@ -38,7 +38,7 @@ function error(opts) {
                 err.message = errors.getDBErrorMessage(err);
                 ctx.status = 422;
             }
-            if (env === 'development' || env == 'production') {
+            if (env === 'development' || env === 'production') {
                 ctx.body = {
                     error: err.message,
                     status: http.STATUS_CODES[ctx.status],

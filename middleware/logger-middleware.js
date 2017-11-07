@@ -32,7 +32,7 @@ if(logToFile) {
 } else {
     winston.configure({
         transports: [new (winston.transports.Console)({timestamp: true})]
-    })
+    });
 }
 
 module.exports = logger;
@@ -46,7 +46,7 @@ function logger(opts) {
         if(env === 'development') {
             winston.error('ERROR: %s \n %s', err.message, err.stack);
         } else {
-            winston.error('ERROR: ', {error: err});
+            winston.error('ERROR: ', err);
         }
     });
 
