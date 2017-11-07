@@ -36,6 +36,7 @@ const ingredientFields = [
     'id',
     'name_singular',
     'name_plural',
+    'store_keeping_name',
     'description',
     'is_composite',
     'serving_size',

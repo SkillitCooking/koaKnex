@@ -13,6 +13,7 @@ app.keys = [config.secret];
 
 require('./schemas')(app);
 const responseTime = require('./middleware/response-time-middleware');
+//TODO: figure out where to use rateLimit
 const rateLimit = require('./middleware/ratelimit-middleware');
 const helmet = require('koa-helmet');
 const logger = require('./middleware/logger-middleware');
@@ -61,8 +62,8 @@ app.shutDown = function shutDown() {
                     console.error(error);
                     err = error;
                 })
-            .then(() => process.exit(err ? 1 : 0));
-        })
+                .then(() => process.exit(err ? 1 : 0));
+        });
     }
 };
 

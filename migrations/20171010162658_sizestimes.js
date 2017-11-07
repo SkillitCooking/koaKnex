@@ -13,9 +13,11 @@ exports.up = function(knex) {
 };
 
 exports.down = function(knex) {
-    knex.schema
+    return knex.schema
         .alterTable('ingredients', function(table) {
             table.dropColumns(
+                //change unit_price to total_price
+                //rename columns in DB
                 'est_unit_price',
                 'total_size'
             );
@@ -27,3 +29,6 @@ exports.down = function(knex) {
             );
         });
 };
+
+
+//Using ingredient names/types as tags - eg tag bag of broccoli with "Broccoli"

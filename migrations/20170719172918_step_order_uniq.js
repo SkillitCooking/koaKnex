@@ -12,7 +12,7 @@ exports.up = function(knex) {
             table.uuid('tag').notNullable().references('tags.id').onDelete('CASCADE');
             table.unique(['recipe', 'tag']);
             table.timestamps(true, true);
-        })
+        });
 };
 
 exports.down = function(knex) {

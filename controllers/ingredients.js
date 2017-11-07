@@ -113,8 +113,8 @@ module.exports = {
         if(composingToEdit.length > 0) {
             composingToEdit.forEach(ci => {
                 queries.push(ctx.app.db('composing_ingredients')
-                        .where('id', ci.id)
-                        .update(humps.decamelizeKeys(ci)));
+                    .where('id', ci.id)
+                    .update(humps.decamelizeKeys(ci)));
             });
         }
         if(!_.isEmpty(ingredient)) {
@@ -186,7 +186,7 @@ module.exports = {
         if(!isUUID(id)) {
             ctx.throw(400, new errors.BadRequestError('Need an id with that DELETE, dawg'));
         }
-        const data = await ctx.app.db('ingredients').where('id', id).returning(['id', 'name_singular']).del();
+        const data = await ctx.app.db('ingredients').where('id', id).returning(['id', 'store_keeping_name', 'name_singular']).del();
         ctx.body = {data: humps.camelizeKeys(data)};
     }
 };

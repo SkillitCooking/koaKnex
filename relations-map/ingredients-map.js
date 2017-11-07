@@ -11,6 +11,7 @@ const {propWithPrefix} = require('../lib/helpers');
 const ingredientFields = [
     'id',
     'name_singular',
+    'store_keeping_name',
     'name_plural',
     'description',
     'is_composite',

@@ -19,6 +19,10 @@ const ingredientSchema = yup.object().shape({
         ? schema
         : schema.required()
     ),
+    storeKeepingName: yup.string().trim().when('$isUpdate', (isUpdate, schema) => isUpdate
+        ? schema
+        : schema.required()
+    ),
     description: yup.string().trim(),
     //how to index this to presence of relations in composing_ingredients
     //that use it as a parent?
