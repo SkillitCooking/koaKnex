@@ -4,7 +4,7 @@ exports.up = function(knex) {
         .alterTable('ingredients', function(table) {
             //drop name_singular unique constraint, add store_keeping_name_uniq
             table.dropUnique('name_singular');
-            table.string('store_keeping_name').notNullable().unique();
+            table.string('store_keeping_name').unique();
         });
 };
 
