@@ -38,7 +38,7 @@ const ingredientSchema = yup.object().shape({
         ? schema
         : schema.default(1)
     ),
-    estUnitPrice: yup.number(),
+    estTotalPrice: yup.number(),
     units: yup.string()
         .test({
             name: 'units',
