@@ -30,10 +30,13 @@ const mealPlansSchema = yup.object().shape({
     recipes: yup.array().when('$isUpdate', (isUpdate, schema) => isUpdate
         ? schema.ensure()
         : schema.min(1)
-    ).of(yup.string().test({
-        name: 'recipes',
-        message: '${path} must be uuid',
-        test: val => isUUID(val)
+    ).of(yup.object().shape({
+        order: yup.number().min(1).integer().required(),
+        id: yup.string().test({
+            name: 'recipeId',
+            message: '${path} must be uuid',
+            test: val => val ? isUUID(val) : true
+        })
     })),
     title: yup.string().trim().max(50),
     overview: yup.string().trim()

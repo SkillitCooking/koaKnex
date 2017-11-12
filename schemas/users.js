@@ -36,10 +36,10 @@ const userSchema = yup.object().shape({
     lastName: yup.string()
         .trim(),
     address: yup.object().shape({
-        street: yup.string().required(),
+        street: yup.string().ensure(),
         street2: yup.string().ensure(),
-        city: yup.string().required().trim(),
-        state: yup.string().required().trim(),
+        city: yup.string().ensure(),
+        state: yup.string().ensure(),
         zip: yup.string().required().trim()
     }).noUnknown(),
     age: yup.number().positive(),

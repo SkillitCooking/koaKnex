@@ -70,7 +70,8 @@ const relationsMap = [
         mapId: MAP_IDS.RECIPES,
         idProperty: {name: 'id', column: PREFIX.RECIPES + '_id'},
         properties: [...recipeFields.map(propWithPrefix(PREFIX.RECIPES)),
-            {name: 'recipeMealPlanId', column: PREFIX.MEAL_PLAN_RECIPE + '_id'}            
+            {name: 'recipeMealPlanId', column: PREFIX.MEAL_PLAN_RECIPE + '_id'},
+            {name: 'mealPlanOrder', column: PREFIX.MEAL_PLAN_RECIPE + '_order'}            
         ],
         collections: [
             {name: 'steps', mapId: MAP_IDS.STEPS},

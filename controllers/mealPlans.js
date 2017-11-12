@@ -27,10 +27,11 @@ module.exports = {
         await ctx.app.db('meal_plans')
             .insert(humps.decamelizeKeys(sanitizedMealPlan));
         //create recipe mealPlans
-        let recipeMealPlans = mealPlan.recipes.map(recipeId => ({
+        let recipeMealPlans = mealPlan.recipes.map(recipe => ({
             id: uuid(),
-            recipe: recipeId,
-            mealPlan: mealPlan.id
+            recipe: recipe.id,
+            mealPlan: mealPlan.id,
+            order: recipe.order
         }));
         await ctx.app.db('recipe_meal_plans').insert(humps.decamelizeKeys(recipeMealPlans));
         //create mealPlanEmail
@@ -104,10 +105,11 @@ module.exports = {
                 .where('id', id)
                 .update(humps.decamelizeKeys(updateMealPlan)));
             if(mealPlan.recipes && mealPlan.recipes.length > 0) {
-                let recipeMealPlans = mealPlan.recipes.map(recipeId => ({
+                let recipeMealPlans = mealPlan.recipes.map(recipe => ({
                     id: uuid(),
-                    recipe: recipeId,
-                    meal_plan: id
+                    recipe: recipe.id,
+                    meal_plan: id,
+                    order: recipe.order
                 }));
                 queries.push(ctx.app.db('recipe_meal_plans').insert(recipeMealPlans));
             }
