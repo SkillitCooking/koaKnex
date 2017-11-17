@@ -9,13 +9,15 @@ const recipeFields = [
     'description',
     'main_image_url',
     'total_time',
-    'active_time'
+    'active_time',
+    'main_link_url'
 ];
 
 const stepFields = [
     'id',
     'text',
-    'order'
+    'order',
+    'main_link_url'
 ];
 
 const tagFields = [

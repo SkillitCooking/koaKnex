@@ -35,12 +35,13 @@ const stepSchema = yup.object().shape({
         name: 'removeStepTags',
         message: '${path} must be uuid',
         test: val => isUUID(val)
-    }))
+    })),
+    mainLinkUrl: yup.string().url()
 })
-.noUnknown()
-.when('$isUpdate', (isUpdate, schema) => isUpdate
-    ? schema
-    : schema.concat(timeStampSchema)
-);
+    .noUnknown()
+    .when('$isUpdate', (isUpdate, schema) => isUpdate
+        ? schema
+        : schema.concat(timeStampSchema)
+    );
 
 module.exports = stepSchema;

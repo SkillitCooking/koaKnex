@@ -64,7 +64,8 @@ const recipeSchema = yup.object().shape({
         name: 'tags',
         message: '${path} must be uuid',
         test: val => isUUID(val)
-    }))
+    })),
+    mainLinkUrl: yup.string().url()
 })
     .noUnknown()
     .concat(timeStampSchema);
