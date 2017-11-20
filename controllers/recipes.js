@@ -177,6 +177,7 @@ module.exports = {
         if(recipeIngredientsToUpdate.length > 0) {
             try {
                 await (() => {
+                    console.log('there!', recipeIngredientsToUpdate);
                     return ctx.app.db.transaction(async function(trx) {
                         let updates = await getUpdateQueries(ctx.app.schemas.recipeIngredients, recipeIngredientsToUpdate, trx('recipe_ingredients'));
                         let stuff = await Promise.all(updates);
@@ -190,6 +191,7 @@ module.exports = {
         if(seasoningsToUpdate.length > 0) {
             try {
                 await (() => {
+                    console.log('here!', seasoningsToUpdate);
                     return ctx.app.db.transaction(async function(trx) {
                         let updates = await getUpdateQueries(ctx.app.schemas.recipeSeasonings, seasoningsToUpdate, trx('recipe_seasonings'));
                         let stuff = await Promise.all(updates);
