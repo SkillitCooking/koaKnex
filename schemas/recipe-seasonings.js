@@ -23,7 +23,7 @@ const recipeSeasoningSchema = yup.object().shape({
             message: '${path} must be uuid',
             test: val => val ? isUUID(val) : true
         }),
-    presentOrder: yup.number().default(1)
+    presentOrder: yup.number().integer().default(1)
 })
     .noUnknown()
     .when('$isUpdate', (isUpdate, schema) => isUpdate
