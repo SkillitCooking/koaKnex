@@ -19,6 +19,7 @@ module.exports = function(app) {
         ingredients,
         ingredientTags,
         recipeIngredients,
+        recipeSeasonings,
         recipes,
         seasonings,
         steps,
