@@ -21,7 +21,7 @@ module.exports = function (app) {
         //then do migration
         app.migration = true;
         //will only run new, unrun migrations
-        migrationPromise = db.migrate.latest()
+        migrationPromise = db.migrate.rollback()
             .then(() => {
                 app.migration = false;
             }, console.error);
@@ -33,5 +33,5 @@ module.exports = function (app) {
         }
 
         return next();
-    }
+    };
 };
