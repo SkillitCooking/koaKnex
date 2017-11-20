@@ -7,6 +7,6 @@ exports.up = function(knex) {
 
 exports.down = function(knex) {
     return knex.schema.alterTable('recipe_seasonings', function(table) {
-        //table.dropColumn('present_order');
+        table.dropColumn('present_order');
     });
 };

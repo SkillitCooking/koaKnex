@@ -21,9 +21,9 @@ module.exports = function (app) {
         //then do migration
         app.migration = true;
         //will only run new, unrun migrations
-        migrationPromise = db.migrate.rollback()
+        migrationPromise = db.migrate.latest()
             .then((version) => {
-                console.log('here in rollback', version);
+                console.log('here in latest', version);
                 app.migration = false;
             }, console.error);
     }
