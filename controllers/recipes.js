@@ -90,6 +90,7 @@ module.exports = {
     },
 
     async put(ctx) {
+        console.log('here');
         const {body} = ctx.request;
         const {id} = ctx.params;
         if(!isUUID(id)) {
