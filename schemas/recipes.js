@@ -43,11 +43,21 @@ const recipeSchema = yup.object().shape({
         ? schema.ensure()
         : schema.min(1)
     ),
-    seasonings: yup.array().ensure().of(yup.string().test({
-        name: 'seasonings',
-        message: '${path} must be uuid',
-        test: val => isUUID(val)
-    })),
+    seasonings: yup.array().ensure().when('$isUpdate', (isUpdate, schema) => isUpdate
+        ? schema.of(yup.object().shape({
+            id: yup.string().test({
+                name: 'seasonings',
+                message: '${path} must be uuid',
+                test: val => isUUID(val)
+            }),
+            presentOrder: yup.number().integer().required()
+        }))
+        : schema.of(yup.string().test({
+            name: 'seasonings',
+            message: '${path} must be uuid',
+            test: val => isUUID(val)
+        }))
+    ),
     steps: yup.array().of(yup.object().shape({
         text: yup.string().required().trim(),
         tags: yup.array().ensure().of(yup.string().test({
