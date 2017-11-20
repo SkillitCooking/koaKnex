@@ -74,10 +74,11 @@ module.exports = {
         await ctx.app.db('recipe_ingredients').insert(humps.decamelizeKeys(recipe.ingredients));
         //insert recipeSeasonings
         if(recipe.seasonings.length > 0) {
-            let recipeSeasonings = recipe.seasonings.map((seasoning) => ({
+            let recipeSeasonings = recipe.seasonings.map((seasoning, index) => ({
                 id: uuid(),
                 recipe: recipe.id,
-                seasoning: seasoning
+                seasoning: seasoning,
+                present_order: index + 1
             }));
             await ctx.app.db('recipe_seasonings').insert(recipeSeasonings);
         }
@@ -101,10 +102,11 @@ module.exports = {
             recipeIngredientsToRemove = [],
             recipeIngredientsToUpdate = [],
             seasoningsToRemove = [],
+            seasoningsToUpdate = [],
             tagsToRemove = []
         } = body;
         let removeQueries = [];
-        let remove = await handleRemoveIdArrs(recipeIngredientsToRemove, ctx, 'recipe_ingredients')
+        let remove = await handleRemoveIdArrs(recipeIngredientsToRemove, ctx, 'recipe_ingredients');
         if(remove) {
             removeQueries.push(remove);
         }
@@ -184,6 +186,18 @@ module.exports = {
                 ctx.throw(422, e);
             }
         }
+        if(seasoningsToUpdate) {
+            try {
+                await (() => {
+                    return ctx.app.db.transaction(async function(trx) {
+                        let updates = await getUpdateQueries(ctx.app.schemas.recipeSeasonings, seasoningsToUpdate, trx('recipe_seasonings'));
+                        await Promise.all(updates);
+                    });
+                })();
+            } catch (e) {
+                ctx.throw(422, e);
+            }
+        }
         let queries = [];
         if(!_.isEmpty(recipe)) {
             let validationOpts = {
@@ -208,7 +222,8 @@ module.exports = {
             let recipeSeasonings = recipe.seasonings.map((seasoning) => ({
                 id: uuid(),
                 recipe: id,
-                seasoning: seasoning
+                seasoning: seasoning.id,
+                present_order: seasoning.presentOrder
             }));
             queries.push(ctx.app.db('recipe_seasonings').insert(recipeSeasonings));
         }

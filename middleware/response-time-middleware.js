@@ -6,5 +6,5 @@ module.exports = function() {
         await next();
         let delta = Math.ceil(Date.now() - start);
         ctx.set('X-Response-Time', delta + 'ms');
-    }
+    };
 };

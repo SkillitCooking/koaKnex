@@ -115,7 +115,8 @@ const relationsMap = [
         mapId: MAP_IDS.SEASONINGS,
         idProperty: {name: 'id', column: PREFIX.SEASONINGS + '_id'},
         properties: [...seasoningsFields.map(propWithPrefix(PREFIX.SEASONINGS)),
-            {name: 'recipeSeaId', column: PREFIX.RECIPE_SEASONINGS + '_id'}
+            {name: 'recipeSeaId', column: PREFIX.RECIPE_SEASONINGS + '_id'},
+            {name: 'presentOrder', column: PREFIX.RECIPE_SEASONINGS + '_present_order'}
         ]
     }
 ];
