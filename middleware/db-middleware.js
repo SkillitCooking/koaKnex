@@ -21,8 +21,9 @@ module.exports = function (app) {
         //then do migration
         app.migration = true;
         //will only run new, unrun migrations
-        migrationPromise = db.migrate.latest()
-            .then(() => {
+        migrationPromise = db.migrate.currentVersion()
+            .then((version) => {
+                console.log('here in migration', version);
                 app.migration = false;
             }, console.error);
     }
