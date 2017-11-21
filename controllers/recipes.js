@@ -179,9 +179,8 @@ module.exports = {
                 await (() => {
                     console.log('there!', recipeIngredientsToUpdate);
                     return ctx.app.db.transaction(async function(trx) {
-                        let updates = await getUpdateQueries(ctx.app.schemas.recipeIngredients, recipeIngredientsToUpdate, trx('recipe_ingredients'));
-                        let stuff = await Promise.all(updates);
-                        console.log('there', stuff);
+                        let updates = await getUpdateQueries(ctx.app.schemas.recipeIngredients, 'recipe_ingredients', recipeIngredientsToUpdate, 'id', trx);
+                        await updates;
                     });
                 })();
             } catch (e) {
@@ -193,7 +192,7 @@ module.exports = {
                 await (() => {
                     console.log('here!', seasoningsToUpdate);
                     return ctx.app.db.transaction(async function(trx) {
-                        let updates = await getUpdateQueries(ctx.app.schemas.recipeSeasonings, seasoningsToUpdate, trx('recipe_seasonings'));
+                        let updates = await getUpdateQueries(ctx.app.schemas.recipeSeasonings, 'recipe_seasonings', seasoningsToUpdate, 'id', trx);
                         await updates;
                     });
                 })();
