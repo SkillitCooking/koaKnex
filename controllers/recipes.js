@@ -195,7 +195,7 @@ module.exports = {
                     return ctx.app.db.transaction(async function(trx) {
                         let updates = await getUpdateQueries(ctx.app.schemas.recipeSeasonings, seasoningsToUpdate, trx('recipe_seasonings'));
                         let stuff = await Promise.all(updates);
-                        console.log('here', stuff);
+                        return stuff;
                     });
                 })();
             } catch (e) {
