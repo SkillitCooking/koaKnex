@@ -177,9 +177,9 @@ module.exports = {
         if(recipeIngredientsToUpdate.length > 0) {
             try {
                 await (() => {
-                    console.log('there!', recipeIngredientsToUpdate);
+                    recipeIngredientsToUpdate = humps.decamelizeKeys(recipeIngredientsToUpdate);
                     return ctx.app.db.transaction(async function(trx) {
-                        let updates = await getUpdateQueries(ctx.app.schemas.recipeIngredients, 'recipe_ingredients', humps.decamelizeKeys(recipeIngredientsToUpdate), 'id', trx);
+                        let updates = await getUpdateQueries(ctx.app.schemas.recipeIngredients, 'recipe_ingredients', recipeIngredientsToUpdate, 'id', trx);
                         await updates;
                     });
                 })();
@@ -190,9 +190,9 @@ module.exports = {
         if(seasoningsToUpdate.length > 0) {
             try {
                 await (() => {
-                    console.log('here!', humps.decamelizeKeys(seasoningsToUpdate));
+                    seasoningsToUpdate = humps.decamelizeKeys(seasoningsToUpdate);
                     return ctx.app.db.transaction(async function(trx) {
-                        let updates = await getUpdateQueries(ctx.app.schemas.recipeSeasonings, 'recipe_seasonings', humps.decamelizeKeys(seasoningsToUpdate), 'id', trx);
+                        let updates = await getUpdateQueries(ctx.app.schemas.recipeSeasonings, 'recipe_seasonings', seasoningsToUpdate, 'id', trx);
                         await updates;
                     });
                 })();
