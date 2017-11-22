@@ -17,7 +17,7 @@ const options = {
         directory: path.join(ROOT, 'migrations'),
         tableName: 'migrations'
     },
-    debug: false,
+    debug: true,
     seeds: {
         directory: path.join(ROOT, 'seeds')
     },
