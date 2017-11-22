@@ -190,7 +190,7 @@ module.exports = {
         if(seasoningsToUpdate.length > 0) {
             try {
                 await (() => {
-                    console.log('here!', seasoningsToUpdate);
+                    console.log('here!', humps.decamelizeKeys(seasoningsToUpdate));
                     return ctx.app.db.transaction(async function(trx) {
                         let updates = await getUpdateQueries(ctx.app.schemas.recipeSeasonings, 'recipe_seasonings', humps.decamelizeKeys(seasoningsToUpdate), 'id', trx);
                         await updates;
