@@ -23,7 +23,7 @@ module.exports = {
         mealPlan = await ctx.app.schemas.mealPlans.validate(mealPlan, validationOpts);
         mealPlan.id = uuid();
         //create mealPlan, omitting recipes
-        let sanitizedMealPlan = _.omit(mealPlan, ['recipes']);
+        let sanitizedMealPlan = _.omit(mealPlan, ['recipes', 'ingredients']);
         await ctx.app.db('meal_plans')
             .insert(humps.decamelizeKeys(sanitizedMealPlan));
         //create ingredient mealPlans
