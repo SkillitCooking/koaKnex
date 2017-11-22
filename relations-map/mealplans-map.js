@@ -12,6 +12,10 @@ const mealPlanFields = [
     'overview'
 ];
 
+const mealPlanIngredientFields = [
+    'id'
+];
+
 const recipeFields = [
     'id',
     'title',
@@ -65,7 +69,15 @@ const relationsMap = [
         idProperty: 'id',
         properties: [...mealPlanFields],
         collections: [
-            {name: 'recipes', mapId: MAP_IDS.RECIPES} //will need to have propWithPrefix for Recipes...
+            {name: 'recipes', mapId: MAP_IDS.RECIPES}, //will need to have propWithPrefix for Recipes...
+            {name: 'ingredients', mapId: MAP_IDS.MEAL_PLAN_INGREDIENT}
+        ]
+    },
+    {
+        mapId: MAP_IDS.MEAL_PLAN_INGREDIENT,
+        idProperty: {name: 'id', column: PREFIX.MEAL_PLAN_INGREDIENT + '_id'},
+        properties: [...mealPlanIngredientFields.map(propWithPrefix(PREFIX.MEAL_PLAN_INGREDIENT)),
+            {name: 'ingredientMealPlanId', column: PREFIX.MEAL_PLAN_INGREDIENT_RELATION + '_id'}
         ]
     },
     {

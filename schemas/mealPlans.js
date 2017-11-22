@@ -27,6 +27,15 @@ const mealPlansSchema = yup.object().shape({
             ? schema
             : schema.required()
         ),
+    ingredients: yup.array().when('$isUpdate', (isUpdate, schema) => isUpdate
+        ? schema.ensure()
+        : schema.ensure()
+    ).of(yup.string()
+        .test({
+            name: 'ingredients',
+            message: '${path} must be uuid',
+            test: val => isUUID(val)
+        })),
     recipes: yup.array().when('$isUpdate', (isUpdate, schema) => isUpdate
         ? schema.ensure()
         : schema.min(1)

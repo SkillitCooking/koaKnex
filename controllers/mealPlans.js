@@ -26,6 +26,13 @@ module.exports = {
         let sanitizedMealPlan = _.omit(mealPlan, ['recipes']);
         await ctx.app.db('meal_plans')
             .insert(humps.decamelizeKeys(sanitizedMealPlan));
+        //create ingredient mealPlans
+        let ingredientMealPlans = mealPlan.ingredients.map(i => ({
+            id: uuid(),
+            mealPlan: mealPlan.id,
+            ingredient: i
+        }));
+        await ctx.app.db('meal_plan_ingredients').insert(humps.decamelizeKeys(ingredientMealPlans));
         //create recipe mealPlans
         let recipeMealPlans = mealPlan.recipes.map(recipe => ({
             id: uuid(),
@@ -90,7 +97,8 @@ module.exports = {
         }
         let {
             mealPlan = {},
-            recipesToRemove = []
+            recipesToRemove = [],
+            ingredientsToRemove = []
         } = body;
         let queries = [];
         if(!_.isEmpty(mealPlan)) {
@@ -113,6 +121,14 @@ module.exports = {
                 }));
                 queries.push(ctx.app.db('recipe_meal_plans').insert(recipeMealPlans));
             }
+            if(mealPlan.ingredients && mealPlan.ingredients.length > 0) {
+                let ingredientMealPlans = mealPlan.ingredients.map(i => ({
+                    id: uuid(),
+                    ingredient: i,
+                    meal_plan: id 
+                }));
+                queries.push(ctx.app.db('meal_plan_ingredients').insert(ingredientMealPlans));
+            }
             if(mealPlan.deliveryTime) {
                 //then need to update mealPlanEmail
                 //TODO: will need to make below query more sophisticated
@@ -124,6 +140,9 @@ module.exports = {
         }
         if(recipesToRemove.length > 0) {
             queries.push(ctx.app.db('recipe_meal_plans').whereIn('id', recipesToRemove).del());
+        }
+        if(ingredientsToRemove.length > 0) {
+            queries.push(ctx.app.db('meal_plan_ingredients').whereIn('id', ingredientsToRemove).del());
         }
         await Promise.all(queries);
         //fetch, map, return mealPlan
