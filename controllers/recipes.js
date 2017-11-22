@@ -192,6 +192,7 @@ module.exports = {
                 await (() => {
                     seasoningsToUpdate = humps.decamelizeKeys(seasoningsToUpdate);
                     return ctx.app.db.transaction(async function(trx) {
+                        console.log('s2u', seasoningsToUpdate);
                         let updates = await getUpdateQueries(ctx.app.schemas.recipeSeasonings, 'recipe_seasonings', seasoningsToUpdate, 'id', trx);
                         await updates;
                     });
