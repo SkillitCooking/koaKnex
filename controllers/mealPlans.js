@@ -107,7 +107,7 @@ module.exports = {
                 context: {isUpdate: true}
             };
             mealPlan = await ctx.app.schemas.mealPlans.validate(mealPlan, validationOpts);
-            let updateMealPlan = _.omit(mealPlan, ['recipes']);
+            let updateMealPlan = _.omit(mealPlan, ['recipes', 'ingredients']);
             updateMealPlan.updatedAt = new Date().toISOString();
             queries.push(ctx.app.db('meal_plans')
                 .where('id', id)
