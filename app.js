@@ -13,7 +13,6 @@ app.keys = [config.secret];
 
 require('./schemas')(app);
 const responseTime = require('./middleware/response-time-middleware');
-//TODO: figure out where to use rateLimit
 const rateLimit = require('./middleware/ratelimit-middleware');
 const helmet = require('koa-helmet');
 const logger = require('./middleware/logger-middleware');
@@ -36,6 +35,7 @@ if(!config.env.isTest) {
  */
 app.use(logger({app: app}));
 app.use(error());
+app.use(rateLimit);
 app.use(camelizeMiddleware);
 app.use(db(app));
 app.use(cors(config.cors));
